@@ -1,0 +1,14 @@
+{
+    "type": "number",
+    "title": {
+        "en": "Flow Rate"
+    },
+    "uiComponent": "sensor",
+    "getable": true,
+    "setable": false,
+    "units": {
+        "en": "m³/h"
+    },
+    "insights": true,
+    "icon": "/assets/flowrate.svg"
+}

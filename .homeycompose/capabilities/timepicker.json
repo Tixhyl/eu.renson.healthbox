@@ -1,0 +1,46 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Timeout"
+    },
+    "values": [{
+            "id": "15min",
+            "title": {
+                "en": "15 Min"
+            }
+        },
+        {
+            "id": "1h",
+            "title": {
+                "en": "1 Hour"
+            }
+        },
+        {
+            "id": "2h",
+            "title": {
+                "en": "2 Hours"
+            }
+        },
+        {
+            "id": "5h",
+            "title": {
+                "en": "5 Hours"
+            }
+        },
+        {
+            "id": "8h",
+            "title": {
+                "en": "8 Hours"
+            }
+        },
+        {
+            "id": "12h",
+            "title": {
+                "en": "12 Hours"
+            }
+        }
+    ],
+    "getable": true,
+    "setable": true,
+    "uiComponent": "picker"
+}

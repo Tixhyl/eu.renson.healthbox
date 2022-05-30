@@ -1,0 +1,10 @@
+{
+    "type": "string",
+    "title": {
+        "en": "Time Left"
+    },
+    "getable": true,
+    "setable": true,
+    "uiComponent": "sensor",
+    "icon": "/assets/time.svg"
+}
