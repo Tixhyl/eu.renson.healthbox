@@ -1,0 +1,15 @@
+{
+    "type": "number",
+    "title": {
+        "en": "RPM",
+        "nl": "RPM"
+    },
+    "uiComponent": "sensor",
+    "getable": true,
+    "setable": false,
+    "units": {
+        "en": "rpm"
+    },
+    "insights": true,
+    "icon": "/assets/rpm.svg"
+}

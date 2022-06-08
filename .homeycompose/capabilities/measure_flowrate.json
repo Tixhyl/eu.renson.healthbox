@@ -1,7 +1,8 @@
 {
     "type": "number",
     "title": {
-        "en": "Flow Rate"
+        "en": "Flow Rate",
+        "nl": "Debiet"
     },
     "uiComponent": "sensor",
     "getable": true,

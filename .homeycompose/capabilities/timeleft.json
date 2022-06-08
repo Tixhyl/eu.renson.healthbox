@@ -1,7 +1,8 @@
 {
     "type": "string",
     "title": {
-        "en": "Time Left"
+        "en": "Time Left",
+        "nl": "Tijd resterend"
     },
     "getable": true,
     "setable": true,

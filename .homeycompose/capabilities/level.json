@@ -1,0 +1,15 @@
+{
+    "type": "number",
+    "title": {
+        "en": "Level",
+        "nl": "Niveau"
+    },
+    "chartType": "stepLine",
+    "min": 0,
+    "max": 200,
+    "decimals": 0,
+    "units": "%",
+    "getable": true,
+    "setable": true,
+    "uiComponent": "slider"
+}

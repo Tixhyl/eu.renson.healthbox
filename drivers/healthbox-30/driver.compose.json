@@ -4,9 +4,10 @@
     },
     "class": "fan",
     "capabilities": [
-        "flowrate",
+        "measure_flowrate",
         "boost",
         "timeleft",
+        "level",
         "timepicker"
     ],
     "platforms": [

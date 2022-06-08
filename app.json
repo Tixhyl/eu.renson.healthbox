@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
+  "brandColor": "#151866",
   "platforms": [
     "local"
   ],
@@ -26,6 +27,142 @@
     "name": "Christophe Rouckhout",
     "email": "christophe132@gmail.com"
   },
+  "flow": {
+    "triggers": [
+      {
+        "id": "rpm_changed",
+        "title": {
+          "en": "RPM changed",
+          "nl": "RPM veranderd"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "measure_rpm",
+            "title": {
+              "en": "RPM",
+              "nl": "RPM"
+            },
+            "example": {
+              "en": "Current RPM",
+              "nl": "Huidig RPM"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30&class=fan"
+          }
+        ]
+      },
+      {
+        "id": "flowrate_changed",
+        "title": {
+          "en": "Flowrate changed",
+          "nl": "Debiet veranderd"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "measure_flowrate",
+            "title": {
+              "en": "Flowrate",
+              "nl": "Debiet"
+            },
+            "example": {
+              "en": "Current flowrate",
+              "hl": "Huidig debiet"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30"
+          }
+        ]
+      },
+      {
+        "id": "timeleft_changed",
+        "title": {
+          "en": "Remaining time changed",
+          "nl": "Resterende tijd over"
+        },
+        "tokens": [
+          {
+            "type": "string",
+            "name": "timeleft",
+            "title": {
+              "en": "Remaining time",
+              "nl": "Resterende tijd"
+            },
+            "example": {
+              "en": "Remaining time",
+              "nl": "Resterende tijd"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30&class=other"
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "set-flowrate-of-all-rooms",
+        "title": {
+          "en": "Set flowrate of",
+          "nl": "Zet het debiet van"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30&class=fan"
+          },
+          {
+            "type": "autocomplete",
+            "name": "rooms",
+            "placeholder": {
+              "en": "Room",
+              "nl": "Kamer"
+            }
+          },
+          {
+            "type": "range",
+            "name": "flowrate",
+            "min": 0,
+            "max": 200,
+            "step": 1,
+            "label": "%",
+            "labelDecimals": 0,
+            "title": {
+              "en": "Flowrate",
+              "nl": "Debiet"
+            }
+          },
+          {
+            "type": "time",
+            "name": "activationtime",
+            "title": {
+              "en": "Time",
+              "nl": "Tijd"
+            },
+            "placeholder": {
+              "en": "00:15"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {
@@ -33,9 +170,10 @@
       },
       "class": "fan",
       "capabilities": [
-        "flowrate",
+        "measure_flowrate",
         "boost",
         "timeleft",
+        "level",
         "timepicker"
       ],
       "platforms": [
@@ -70,10 +208,7 @@
         },
         {
           "id": "add_devices",
-          "template": "add_devices",
-          "navigation": {
-            "prev": "list_healthboxes"
-          }
+          "template": "add_devices"
         }
       ],
       "id": "healthbox-30"
@@ -83,7 +218,8 @@
     "boost": {
       "type": "boolean",
       "title": {
-        "en": "Boost"
+        "en": "Boost",
+        "nl": "Boost"
       },
       "uiComponent": "toggle",
       "getable": true,
@@ -91,10 +227,26 @@
       "insights": true,
       "icon": "/assets/boost.svg"
     },
-    "flowrate": {
+    "level": {
       "type": "number",
       "title": {
-        "en": "Flow Rate"
+        "en": "Level",
+        "nl": "Niveau"
+      },
+      "chartType": "stepLine",
+      "min": 0,
+      "max": 200,
+      "decimals": 0,
+      "units": "%",
+      "getable": true,
+      "setable": true,
+      "uiComponent": "slider"
+    },
+    "measure_flowrate": {
+      "type": "number",
+      "title": {
+        "en": "Flow Rate",
+        "nl": "Debiet"
       },
       "uiComponent": "sensor",
       "getable": true,
@@ -105,10 +257,26 @@
       "insights": true,
       "icon": "/assets/flowrate.svg"
     },
+    "measure_rpm": {
+      "type": "number",
+      "title": {
+        "en": "RPM",
+        "nl": "RPM"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "rpm"
+      },
+      "insights": true,
+      "icon": "/assets/rpm.svg"
+    },
     "timeleft": {
       "type": "string",
       "title": {
-        "en": "Time Left"
+        "en": "Time Left",
+        "nl": "Tijd resterend"
       },
       "getable": true,
       "setable": true,
@@ -118,11 +286,12 @@
     "timepicker": {
       "type": "enum",
       "title": {
-        "en": "Timeout"
+        "en": "Timeout",
+        "nl": "Timeout"
       },
       "values": [
         {
-          "id": "15min",
+          "id": "15m",
           "title": {
             "en": "15 Min"
           }
@@ -130,31 +299,36 @@
         {
           "id": "1h",
           "title": {
-            "en": "1 Hour"
+            "en": "1 Hour",
+            "nl": "1 Uur"
           }
         },
         {
           "id": "2h",
           "title": {
-            "en": "2 Hours"
+            "en": "2 Hours",
+            "nl": "2 Uur"
           }
         },
         {
           "id": "5h",
           "title": {
-            "en": "5 Hours"
+            "en": "5 Hours",
+            "nl": "5 Uur"
           }
         },
         {
           "id": "8h",
           "title": {
-            "en": "8 Hours"
+            "en": "8 Hours",
+            "nl": "8 Uur"
           }
         },
         {
           "id": "12h",
           "title": {
-            "en": "12 Hours"
+            "en": "12 Hours",
+            "nl": "12 Uur"
           }
         }
       ],

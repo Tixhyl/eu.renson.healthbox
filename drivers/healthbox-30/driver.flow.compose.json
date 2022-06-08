@@ -1,0 +1,103 @@
+{
+    "triggers": [{
+            "id": "rpm_changed",
+            "title": {
+                "en": "RPM changed",
+                "nl": "RPM veranderd"
+            },
+            "tokens": [{
+                "type": "number",
+                "name": "measure_rpm",
+                "title": {
+                    "en": "RPM",
+                    "nl": "RPM"
+                },
+                "example": {
+                    "en": "Current RPM",
+                    "nl": "Huidig RPM"
+                }
+            }],
+            "$filter": "class=fan"
+        },
+        {
+            "id": "flowrate_changed",
+            "title": {
+                "en": "Flowrate changed",
+                "nl": "Debiet veranderd"
+            },
+            "tokens": [{
+                "type": "number",
+                "name": "measure_flowrate",
+                "title": {
+                    "en": "Flowrate",
+                    "nl": "Debiet"
+                },
+                "example": {
+                    "en": "Current flowrate",
+                    "hl": "Huidig debiet"
+                }
+            }]
+        },
+        {
+            "id": "timeleft_changed",
+            "title": {
+                "en": "Remaining time changed",
+                "nl": "Resterende tijd over"
+            },
+            "tokens": [{
+                "type": "string",
+                "name": "timeleft",
+                "title": {
+                    "en": "Remaining time",
+                    "nl": "Resterende tijd"
+                },
+                "example": {
+                    "en": "Remaining time",
+                    "nl": "Resterende tijd"
+                }
+            }],
+            "$filter": "class=other"
+        }
+    ],
+    "actions": [{
+        "$filter": "class=fan",
+        "id": "set-flowrate-of-all-rooms",
+        "title": {
+            "en": "Set flowrate of",
+            "nl": "Zet het debiet van"
+        },
+        "args": [{
+                "type": "autocomplete",
+                "name": "rooms",
+                "placeholder": {
+                    "en": "Room",
+                    "nl": "Kamer"
+                }
+            },
+            {
+                "type": "range",
+                "name": "flowrate",
+                "min": 0,
+                "max": 200,
+                "step": 1,
+                "label": "%",
+                "labelDecimals": 0,
+                "title": {
+                    "en": "Flowrate",
+                    "nl": "Debiet"
+                }
+            },
+            {
+                "type": "time",
+                "name": "activationtime",
+                "title": {
+                    "en": "Time",
+                    "nl": "Tijd"
+                },
+                "placeholder": {
+                    "en": "00:15"
+                }
+            }
+        ]
+    }]
+}

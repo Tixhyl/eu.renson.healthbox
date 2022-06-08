@@ -10,7 +10,58 @@ class MyDriver extends Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('MyDriver has been initialized');
+    this.setFlows();
+    this.interval = 5000;
+    this.updateLoop();
+    this.loopErrors = 0;
+    this.log('Driver initialized');
+  }
+
+  async updateLoop() {
+    if (!this.homey.settings.get('ip')) {
+      setTimeout(this.updateLoop.bind(this), this.interval);
+      return;
+    }
+    try {
+      const req = await this.axiosFetch(this.homey.settings.get('ip'), '/api/data/current');
+      if (!req) throw new Error('Request failed ');
+
+      const rooms = req.room;
+      await Promise.all(this.getDevices().map(async element => {
+        const roomId = element.getData().room_id;
+        if (roomId === null) {
+          // Generic Box Ventilation statics
+          const req = await this.axiosFetch(this.homey.settings.get('ip'), '/device/fan');
+          if (!req) throw new Error('Cannot get /device/fan');
+          element.setCapabilityValue('measure_rpm', req.rpm);
+          element.setCapabilityValue('measure_flowrate', Math.round(req.flow * 1e2) / 1e2);
+          element.setCapabilityValue('measure_power', Math.round(req.power * 1e2) / 1e2);
+        } else {
+          // Room Ventilation statics
+          const roomInfo = await this.axiosFetch(this.homey.settings.get('ip'), `/api/boost/${roomId}`);
+          if (!roomInfo) throw new Error('No roominfo found');
+
+          const matchedRoom = rooms.find(item => item.id === roomId);
+          element.setCapabilityValue('measure_flowrate', Math.round(matchedRoom.actuator[0].parameter.flow_rate.value * 1e2) / 1e2);
+          element.setCapabilityValue('boost', roomInfo.enable);
+          element.setCapabilityValue('timeleft', new Date(roomInfo.remaining * 1000).toISOString().substr(11, 8));
+        }
+        if (!element.getAvailable()) await element.setAvailable();
+      }));
+      this.loopErrors = 0;
+    } catch (err) {
+      if (this.loopErrors < 3) {
+        this.loopErrors++;
+      } else if (this.loopErrors === 3) {
+        // 5 errors in a row -> disable devices
+        this.log('Disableing all devices');
+        await Promise.all(this.getDevices().map(async element => element.setUnavailable('Cannot reach this device')));
+      }
+      this.log('Error', this.loopErrors, 'in updateLoop!');
+      this.error('Main updateLoop error', err);
+    } finally {
+      setTimeout(this.updateLoop.bind(this), this.interval);
+    }
   }
 
   async getHealthboxes(session) {
@@ -32,19 +83,8 @@ class MyDriver extends Driver {
           ip: jsonData.IP,
         },
       };
-      const device2 = {
-        name: 'Fake Renson (192.111.111.111)',
-        data: {
-          id: 'qmoiezjfqmiejfqzef',
-        },
-        settings: {
-          ip: '192.111.111.111',
-        },
-      };
       devices.push(device);
-      devices.push(device2);
       session.emit('list_devices', device);
-      session.emit('list_devices', device2);
     });
 
     client.on('listening', () => client.setBroadcast(true));
@@ -60,33 +100,46 @@ class MyDriver extends Driver {
 
   async getRooms(session) {
     const roomDevices = [];
-    this.log('Getting rooms, ip: ', this.selectedDevice.settings.ip);
-    this.log('Getting rooms, id: ', this.selectedDevice.data.id);
-    const res = await this.axiosFetch(this.selectedDevice.settings.ip, '/data/current');
-    if (res) {
-      if (res.room && res.room.length) {
-        await Promise.all(res.room.map(async element => {
-          const room = await this.axiosFetch(this.selectedDevice.settings.ip, `/boost/${element.id}`);
-          this.log(element.id, element.name, element.actuator[0].parameter.flow_rate.value, 'm³/h', 'boost enabled', room.enable, 'boost value', room.level, 'remaining', room.remaining);
-          const dev = {
-            name: element.name,
-            data: {
-              id: `${this.selectedDevice.data.id}-${element.id}`,
-              room_id: element.id,
-            },
-          };
-          session.emit('list_devices', dev);
-          roomDevices.push(dev);
-        }));
-      }
-    } else {
-      this.log('Failed!');
+    const res = await this.axiosFetch(this.selectedDevice.settings.ip, '/api/data/current');
+    if (!res) return [];
+    if (res.room && res.room.length) {
+      await Promise.all(res.room.map(async element => {
+        const room = await this.axiosFetch(this.selectedDevice.settings.ip, `/api/boost/${element.id}`);
+        if (!room) return;
+        this.log(element.id, element.name, element.actuator[0].parameter.flow_rate.value, 'm³/h', 'boost enabled', room.enable, 'boost value', room.level, 'remaining', room.remaining);
+        const dev = {
+          name: element.name,
+          class: 'other',
+          data: {
+            id: `${this.selectedDevice.data.id}-${element.id}`,
+            room_id: element.id,
+            device_ip: this.selectedDevice.settings.ip,
+          },
+        };
+        session.emit('list_devices', dev);
+        roomDevices.push(dev);
+      }));
+    }
+    try {
+      // Ventilation Device
+      const dev = {
+        name: res.global.parameter['device name'].value,
+        class: 'fan',
+        data: {
+          id: `${this.selectedDevice.data.id}-box`,
+          room_id: null,
+          device_ip: this.selectedDevice.settings.ip,
+        },
+        capabilities: ['measure_rpm', 'measure_power', 'measure_flowrate'],
+      };
+      session.emit('list_devices', dev);
+      roomDevices.push(dev);
+    } catch (error) {
+      this.error('Could not add generic Box device');
     }
 
     this.log('roomdevices', roomDevices);
-
     this.selectedDevice = null;
-
     return roomDevices;
   }
 
@@ -95,134 +148,49 @@ class MyDriver extends Driver {
 
     session.setHandler('list_devices', async () => {
       if (!this.selectedDevice) {
-        this.log('1ST VIEW');
         return this.getHealthboxes(session);
       }
-      this.log('2ND VIEW');
       return this.getRooms(session);
     });
 
-    // settings frozen already here
     session.setHandler('list_healthboxes_selection', async data => {
       this.log('handler: list_healthboxes_selection', data);
       this.selectedDevice = data[0];
+      this.homey.settings.set('ip', this.selectedDevice.settings.ip);
     });
-    /* session.setHandler('list_rooms_selection', async data => {
-      this.log('handler: list_rooms_selection', data);
-    }); */
+
+    session.setHandler('add_devices', async () => {
+      this.log('-------- devices added!');
+    });
   }
 
-  /**
-   * onPairListDevices is called when a user is adding a device
-   * and the 'list_devices' view is called.
-   * This should return an array with the data of devices that are available for pairing.
-   */
-  /* async onPairListDevices() {
-    this.log('onPairListDevices');
-
-    return [{
-      name: 'Gerard',
-      data: {
-        id: 'ranty_number',
+  async setFlows() {
+    const roomsActionCard = this.homey.flow.getActionCard('set-flowrate-of-all-rooms');
+    roomsActionCard.registerArgumentAutocompleteListener(
+      'rooms',
+      async (query, args) => {
+        const results = [];
+        results.push({ name: this.homey.__('rooms') });
+        this.getDevices().map(async device => results.push({ name: device.getName() }));
+        return results.filter(result => {
+          return result.name.toLowerCase().includes(query.toLowerCase());
+        });
       },
-    }];
-
-    
-
-    // Create a udp socket client object.
-    const client = dgram.createSocket('udp4');
-    // message variable is used to save user input text.
-    const message = Buffer.from('RENSON_DEVICE/JSON?');
-    // Send message to udp server through client socket.
-    const devices = [];
-    const returnDevices = [];
-
-    client.on('message', msg => {
-      this.log('got message type', typeof msg);
-      const jsonData = JSON.parse(msg.toString());
-      this.log('message received', jsonData);
-      if (jsonData.Device !== 'HEALTHBOX3') return; // Check if device is actually a HEALTHBOX3
-      const device = {
-        name: (jsonData.Description === '' ? 'Healthbox' : jsonData.Description),
-        data: {
-          id: jsonData.warranty_number,
-        },
-        settings: {
-          ip: jsonData.IP,
-        },
-      };
-      returnDevices.push(device);
+    );
+    const flowratesetting = this.homey.flow.getActionCard('set-flowrate-of-all-rooms');
+    flowratesetting.registerRunListener(async (args, state) => {
+      this.log('Setting flowrate of room ->', args);
     });
-
-    this.log('Array of objects', devices);
-
-    client.on('listening', () => client.setBroadcast(true));
-    client.bind();
-
-    client.send(message, 0, message.length, 49152, '255.255.255.255', err => {
-      if (err) {
-        this.log('Error!', err);
-      } else {
-        this.log('Message sent!');
-      }
-    });
-
-    // Give the Healthbox some time to answer
-    await new Promise(r => setTimeout(r, 1000));
-
-    const roomDevices = [];
-
-    if (returnDevices.length === 1) {
-      // Only 1 Healthbox found, so listing the devices of this
-      // http://192.168.10.41/v1/api/data/current
-      const res = await this.axiosFetch('192.168.10.41', '/data/current');
-      if (res) {
-        this.log('fetched', res.room.length);
-
-        if (res.room && res.room.length) {
-          await Promise.all(res.room.map(async element => {
-            const room = await this.axiosFetch('192.168.10.41', `/boost/${element.id}`);
-            this.log(element.id, element.name, element.actuator[0].parameter.flow_rate.value, 'm³/h', 'boost enabled', room.enable, 'boost value', room.level, 'remaining', room.remaining);
-            roomDevices.push({
-              name: element.name,
-              data: {
-                id: `${returnDevices[0].data.id}-${element.id}`,
-                room_id: element.id,
-              },
-            });
-          }));
-        }
-      } else {
-        this.log('Failed!');
-      }
-    }
-
-    this.log('roomdevices', roomDevices);
-
-    return roomDevices;
-  } */
-
-  /*
-    Make an API call
-  */
-  async call(endpoint) {
-    return null;
   }
 
-  async axiosFetch(ip, endpoint, _timeout = 3000) {
-    const url = `http://${ip}/v1/api${endpoint}`;
-    this.log(`Requesting ${url} with timeout ${_timeout}`);
+  async axiosFetch(ip, endpoint, _timeout = 10000) {
+    const url = `http://${ip}/v1${endpoint}`;
     try {
       const resp = await axios.get(url, { timeout: _timeout });
-      // this.setAvailable().catch(this.error);
       return resp.data;
     } catch (error) {
-      // let errcode;
-      // if (error.response === undefined) errcode = 1; // Timeout
-      // if (error.response !== undefined && error.response.data.status === 404) errcode = 2; // 404 - Not Found
-      // const errMess = { error: true, error_code: errcode };
-      this.log(`Error at endpoint ${endpoint}`, error);
-      return null;
+      this.log(`ERROR at url ${url}`);
+      return false;
     }
   }
 
