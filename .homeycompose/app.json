@@ -3,19 +3,35 @@
     "version": "1.0.0",
     "compatibility": ">=5.0.0",
     "sdk": 3,
-    "brandColor": "#151866",
+    "brandColor": "#00275b",
     "platforms": [
         "local"
     ],
     "name": {
-        "en": "Healthbox 3.0"
+        "en": "Renson"
     },
     "description": {
-        "en": "Adds support for Healthbox 3.0 ventilation system from Renson"
+        "en": "Creating healthy spaces"
     },
     "category": [
         "climate"
     ],
+    "tags": {
+        "en": [
+            "renson",
+            "healthbox",
+            "healthbox 3.0",
+            "ventilation",
+            "fan"
+        ],
+        "nl": [
+            "renson",
+            "healthbox",
+            "healthbox 3.0",
+            "ventilatie",
+            "fan"
+        ]
+    },
     "permissions": [],
     "images": {
         "small": "/assets/images/small.png",
@@ -25,5 +41,18 @@
     "author": {
         "name": "Christophe Rouckhout",
         "email": "christophe132@gmail.com"
-    }
+    },
+    "contributing": {
+        "donate": {
+            "paypal": {
+                "username": "Tixhyl"
+            }
+        }
+    },
+    "bugs": {
+        "url": "https://github.com/Tixhyl/eu.renson.healthbox/issues"
+    },
+    "source": "https://github.com/Tixhyl/eu.renson.healthbox",
+    "homepage": "https://www.renson.eu",
+    "support": "mailto:info@tixhyl.be"
 }

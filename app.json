@@ -4,19 +4,35 @@
   "version": "1.0.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
-  "brandColor": "#151866",
+  "brandColor": "#00275b",
   "platforms": [
     "local"
   ],
   "name": {
-    "en": "Healthbox 3.0"
+    "en": "Renson"
   },
   "description": {
-    "en": "Adds support for Healthbox 3.0 ventilation system from Renson"
+    "en": "Creating healthy spaces"
   },
   "category": [
     "climate"
   ],
+  "tags": {
+    "en": [
+      "renson",
+      "healthbox",
+      "healthbox 3.0",
+      "ventilation",
+      "fan"
+    ],
+    "nl": [
+      "renson",
+      "healthbox",
+      "healthbox 3.0",
+      "ventilatie",
+      "fan"
+    ]
+  },
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
@@ -27,6 +43,19 @@
     "name": "Christophe Rouckhout",
     "email": "christophe132@gmail.com"
   },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "Tixhyl"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/Tixhyl/eu.renson.healthbox/issues"
+  },
+  "source": "https://github.com/Tixhyl/eu.renson.healthbox",
+  "homepage": "https://www.renson.eu",
+  "support": "mailto:info@tixhyl.be",
   "flow": {
     "triggers": [
       {
@@ -116,10 +145,14 @@
     ],
     "actions": [
       {
-        "id": "set-flowrate-of-all-rooms",
+        "id": "set-flowrate",
         "title": {
           "en": "Set flowrate of",
           "nl": "Zet het debiet van"
+        },
+        "titleFormatted": {
+          "en": "Set flowrate of [[rooms]] to [[flowrate]]% for [[activationtime]]",
+          "nl": "Zet debiet van [[rooms]] op [[flowrate]]% voor [[activationtime]]"
         },
         "args": [
           {
@@ -157,6 +190,32 @@
             },
             "placeholder": {
               "en": "00:15"
+            }
+          }
+        ]
+      },
+      {
+        "id": "stop-boost",
+        "title": {
+          "en": "Stop boost of",
+          "nl": "Stop boost van"
+        },
+        "titleFormatted": {
+          "en": "Stop boost of [[rooms]]",
+          "nl": "Stop boost van [[rooms]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30&class=fan"
+          },
+          {
+            "type": "autocomplete",
+            "name": "rooms",
+            "placeholder": {
+              "en": "Room",
+              "nl": "Kamer"
             }
           }
         ]

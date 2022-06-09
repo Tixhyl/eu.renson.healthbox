@@ -1,1 +1,2 @@
-Adds support for Healthbox 3.0 ventilation system from Renson
+Adds support for the Healthbox 3.0 ventilation systems from Renson.
+Control and monitor your ventilation system.

@@ -60,44 +60,69 @@
         }
     ],
     "actions": [{
-        "$filter": "class=fan",
-        "id": "set-flowrate-of-all-rooms",
-        "title": {
-            "en": "Set flowrate of",
-            "nl": "Zet het debiet van"
+            "$filter": "class=fan",
+            "id": "set-flowrate",
+            "title": {
+                "en": "Set flowrate of",
+                "nl": "Zet het debiet van"
+            },
+            "titleFormatted": {
+                "en": "Set flowrate of [[rooms]] to [[flowrate]]% for [[activationtime]]",
+                "nl": "Zet debiet van [[rooms]] op [[flowrate]]% voor [[activationtime]]"
+            },
+            "args": [{
+                    "type": "autocomplete",
+                    "name": "rooms",
+                    "placeholder": {
+                        "en": "Room",
+                        "nl": "Kamer"
+                    }
+                },
+                {
+                    "type": "range",
+                    "name": "flowrate",
+                    "min": 0,
+                    "max": 200,
+                    "step": 1,
+                    "label": "%",
+                    "labelDecimals": 0,
+                    "title": {
+                        "en": "Flowrate",
+                        "nl": "Debiet"
+                    }
+                },
+                {
+                    "type": "time",
+                    "name": "activationtime",
+                    "title": {
+                        "en": "Time",
+                        "nl": "Tijd"
+                    },
+                    "placeholder": {
+                        "en": "00:15"
+                    }
+                }
+            ]
         },
-        "args": [{
+        {
+            "$filter": "class=fan",
+            "id": "stop-boost",
+            "title": {
+                "en": "Stop boost of",
+                "nl": "Stop boost van"
+            },
+            "titleFormatted": {
+                "en": "Stop boost of [[rooms]]",
+                "nl": "Stop boost van [[rooms]]"
+            },
+            "args": [{
                 "type": "autocomplete",
                 "name": "rooms",
                 "placeholder": {
                     "en": "Room",
                     "nl": "Kamer"
                 }
-            },
-            {
-                "type": "range",
-                "name": "flowrate",
-                "min": 0,
-                "max": 200,
-                "step": 1,
-                "label": "%",
-                "labelDecimals": 0,
-                "title": {
-                    "en": "Flowrate",
-                    "nl": "Debiet"
-                }
-            },
-            {
-                "type": "time",
-                "name": "activationtime",
-                "title": {
-                    "en": "Time",
-                    "nl": "Tijd"
-                },
-                "placeholder": {
-                    "en": "00:15"
-                }
-            }
-        ]
-    }]
+            }]
+        }
+    ]
 }

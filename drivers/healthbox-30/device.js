@@ -61,33 +61,31 @@ class MyDevice extends Device {
     this.setCapabilityValue('timepicker', this.getTimepickerId(res.timeout));
     // Register listeners
     this.registerCapabilityListener('boost', async value => {
-      let json;
-      if (value) {
-        json = JSON.stringify({ enable: true, level: this.getCapabilityValue('level'), timeout: this.getTimepickerSeconds(this.getCapabilityValue('timepicker')) });
-      } else {
-        json = JSON.stringify({ enable: false });
-      }
-      const res = await this.axiosPut(`/boost/${this.getData().room_id}`, json);
+      const res = await this.setAllValuesRequest(value, this.getCapabilityValue('level'), this.getTimepickerSeconds(this.getCapabilityValue('timepicker')));
       if (res) this.log('Boost enabled for', this.getName());
     });
 
     this.registerCapabilityListener('timepicker', async value => {
       this.log(this.getName(), 'timepicker request', value);
-      if (this.getCapabilityValue('boost')) {
-        const res = await this.axiosPut(`/boost/${this.getData().room_id}`, JSON.stringify({ enable: true, timeout: this.getTimepickerSeconds(value) }));
-        if (res) this.log('Time adjusted for', this.getName());
-      }
+      // if (this.getCapabilityValue('boost')) {
+      const res = await this.axiosPut(`/boost/${this.getData().room_id}`, JSON.stringify({ enable: true, default_timeout: this.getTimepickerSeconds(value) }));
+      if (res) this.log('Time adjusted for', this.getName());
+      // }
     });
 
     this.registerCapabilityListener('level', async value => {
       this.log(this.getName(), 'level request', value);
-      if (this.getCapabilityValue('boost')) {
-        const res = await this.axiosPut(`/boost/${this.getData().room_id}`, JSON.stringify({ level: value }));
-        if (res) this.log('Level adjusted for', this.getName());
-      }
+      const res = await this.axiosPut(`/boost/${this.getData().room_id}`, JSON.stringify({ default_level: value, level: value }));
+      if (res) this.log('Level adjusted for', this.getName());
     });
 
     this.log('MyDevice has been initialized');
+  }
+
+  async setAllValuesRequest(enable, level, timeout) {
+    this.log('Sending JSON', JSON.stringify({ enable, level, timeout }));
+    const res = await this.axiosPut(`/boost/${this.getData().room_id}`, JSON.stringify({ enable, level, timeout }));
+    return res;
   }
 
   /**

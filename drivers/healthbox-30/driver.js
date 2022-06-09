@@ -44,6 +44,7 @@ class MyDriver extends Driver {
           const matchedRoom = rooms.find(item => item.id === roomId);
           element.setCapabilityValue('measure_flowrate', Math.round(matchedRoom.actuator[0].parameter.flow_rate.value * 1e2) / 1e2);
           element.setCapabilityValue('boost', roomInfo.enable);
+          element.setCapabilityValue('level', roomInfo.level);
           element.setCapabilityValue('timeleft', new Date(roomInfo.remaining * 1000).toISOString().substr(11, 8));
         }
         if (!element.getAvailable()) await element.setAvailable();
@@ -130,7 +131,9 @@ class MyDriver extends Driver {
           room_id: null,
           device_ip: this.selectedDevice.settings.ip,
         },
-        capabilities: ['measure_rpm', 'measure_power', 'measure_flowrate'],
+        capabilities: ['measure_rpm',
+          'measure_power',
+          'measure_flowrate'],
       };
       session.emit('list_devices', dev);
       roomDevices.push(dev);
@@ -165,21 +168,59 @@ class MyDriver extends Driver {
   }
 
   async setFlows() {
-    const roomsActionCard = this.homey.flow.getActionCard('set-flowrate-of-all-rooms');
-    roomsActionCard.registerArgumentAutocompleteListener(
+    const setFlowrateAction = this.homey.flow.getActionCard('set-flowrate');
+    setFlowrateAction.registerArgumentAutocompleteListener(
       'rooms',
       async (query, args) => {
         const results = [];
-        results.push({ name: this.homey.__('rooms') });
-        this.getDevices().map(async device => results.push({ name: device.getName() }));
+        results.push({ name: this.homey.__('rooms'), allrooms: true });
+        this.getDevices().map(async device => {
+          this.log('Getting devices,');
+          results.push({ name: device.getName(), allrooms: false, data: device.getData() });
+        });
         return results.filter(result => {
           return result.name.toLowerCase().includes(query.toLowerCase());
         });
       },
     );
-    const flowratesetting = this.homey.flow.getActionCard('set-flowrate-of-all-rooms');
-    flowratesetting.registerRunListener(async (args, state) => {
-      this.log('Setting flowrate of room ->', args);
+    const flowActionFlowrate = this.homey.flow.getActionCard('set-flowrate');
+    flowActionFlowrate.registerRunListener(async (args, state) => {
+      const level = args.flowrate;
+      const [hours, minutes] = args.activationtime.split(':');
+      const seconds = hours * 60 * 60 + minutes * 60;
+      if (args.rooms.allrooms) {
+        await Promise.all(this.getDevices().map(async device => {
+          if (device.getClass() !== 'fan') device.setAllValuesRequest(true, level, seconds);
+        }));
+      } else {
+        await this.getDevice(args.rooms.data).setAllValuesRequest(true, level, seconds);
+      }
+    });
+
+    const stopBoostCard = this.homey.flow.getActionCard('stop-boost');
+    stopBoostCard.registerArgumentAutocompleteListener(
+      'rooms',
+      async (query, args) => {
+        const results = [];
+        results.push({ name: this.homey.__('rooms'), allrooms: true });
+        this.getDevices().map(async device => {
+          this.log('Getting devices,');
+          results.push({ name: device.getName(), allrooms: false, data: device.getData() });
+        });
+        return results.filter(result => {
+          return result.name.toLowerCase().includes(query.toLowerCase());
+        });
+      },
+    );
+    const stopBoostCardFlow = this.homey.flow.getActionCard('stop-boost');
+    stopBoostCardFlow.registerRunListener(async (args, state) => {
+      if (args.rooms.allrooms) {
+        await Promise.all(this.getDevices().map(async device => {
+          if (device.getClass() !== 'fan') device.setAllValuesRequest(false, 0, 0);
+        }));
+      } else {
+        await this.getDevice(args.rooms.data).setAllValuesRequest(true, 0, 0);
+      }
     });
   }
 
