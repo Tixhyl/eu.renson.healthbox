@@ -11,7 +11,7 @@ class MyDriver extends Driver {
    */
   async onInit() {
     this.setFlows();
-    this.interval = 5000;
+    this.interval = 10000;
     this.updateLoop();
     this.loopErrors = 0;
     this.log('Driver initialized');
@@ -22,27 +22,27 @@ class MyDriver extends Driver {
       setTimeout(this.updateLoop.bind(this), this.interval);
       return;
     }
+
     try {
       const req = await this.axiosFetch(this.homey.settings.get('ip'), '/api/data/current');
       if (!req) throw new Error('Request failed ');
 
       const rooms = req.room;
       await Promise.all(this.getDevices().map(async element => {
-        const roomId = element.getData().room_id;
-        if (roomId === null) {
+        if (element.getClass() === 'fan') {
           // Generic Box Ventilation statics
-          const req = await this.axiosFetch(this.homey.settings.get('ip'), '/device/fan');
+          const req = await this.axiosFetch(element.getStoreValue('address'), '/device/fan');
           if (!req) throw new Error('Cannot get /device/fan');
           element.setCapabilityValue('measure_rpm', req.rpm);
-          element.setCapabilityValue('measure_flowrate', Math.round(req.flow * 1e2) / 1e2);
-          element.setCapabilityValue('measure_power', Math.round(req.power * 1e2) / 1e2);
+          element.setCapabilityValue('measure_flowrate', Math.round(req.flow * 1e1) / 1e1);
+          element.setCapabilityValue('measure_power', Math.round(req.power * 1e1) / 1e1);
         } else {
           // Room Ventilation statics
-          const roomInfo = await this.axiosFetch(this.homey.settings.get('ip'), `/api/boost/${roomId}`);
+          const roomInfo = await this.axiosFetch(element.getStoreValue('address'), `/api/boost/${element.getStoreValue('id')}`);
           if (!roomInfo) throw new Error('No roominfo found');
 
-          const matchedRoom = rooms.find(item => item.id === roomId);
-          element.setCapabilityValue('measure_flowrate', Math.round(matchedRoom.actuator[0].parameter.flow_rate.value * 1e2) / 1e2);
+          const matchedRoom = rooms.find(item => item.id === element.getStoreValue('id'));
+          element.setCapabilityValue('measure_flowrate', Math.round(matchedRoom.actuator[0].parameter.flow_rate.value * 1e1) / 1e1);
           element.setCapabilityValue('boost', roomInfo.enable);
           element.setCapabilityValue('level', roomInfo.level);
           element.setCapabilityValue('timeleft', new Date(roomInfo.remaining * 1000).toISOString().substr(11, 8));
@@ -73,7 +73,7 @@ class MyDriver extends Driver {
 
     client.on('message', msg => {
       const jsonData = JSON.parse(msg.toString());
-      this.log('message received', jsonData);
+      this.log('Broadcast reply message received!');
       if (jsonData.Device !== 'HEALTHBOX3') return; // Check if device is actually a HEALTHBOX3
       const device = {
         name: `${jsonData.Description === '' ? 'Healthbox' : jsonData.Description} (${jsonData.IP})`,
@@ -96,6 +96,7 @@ class MyDriver extends Driver {
       else this.log('Message sent!');
     });
     await new Promise(r => setTimeout(r, 2000));
+    this.log('Getting Healthboxes done!');
     return devices;
   }
 
@@ -111,11 +112,12 @@ class MyDriver extends Driver {
         const dev = {
           name: element.name,
           class: 'other',
-          data: {
-            id: `${this.selectedDevice.data.id}-${element.id}`,
-            room_id: element.id,
-            device_ip: this.selectedDevice.settings.ip,
+          data: { id: `${this.selectedDevice.data.id}#${element.id}` },
+          store: {
+            address: this.selectedDevice.settings.ip,
+            id: element.id,
           },
+          icon: '/room.svg',
         };
         session.emit('list_devices', dev);
         roomDevices.push(dev);
@@ -126,14 +128,12 @@ class MyDriver extends Driver {
       const dev = {
         name: res.global.parameter['device name'].value,
         class: 'fan',
-        data: {
-          id: `${this.selectedDevice.data.id}-box`,
-          room_id: null,
-          device_ip: this.selectedDevice.settings.ip,
+        data: { id: `${this.selectedDevice.data.id}#box` },
+        store: {
+          address: this.selectedDevice.settings.ip,
+          id: -1,
         },
-        capabilities: ['measure_rpm',
-          'measure_power',
-          'measure_flowrate'],
+        capabilities: ['measure_rpm', 'measure_power', 'measure_flowrate', 'boost', 'level', 'timepicker'],
       };
       session.emit('list_devices', dev);
       roomDevices.push(dev);
@@ -141,7 +141,7 @@ class MyDriver extends Driver {
       this.error('Could not add generic Box device');
     }
 
-    this.log('roomdevices', roomDevices);
+    this.log('Found', roomDevices.length, 'devices!');
     this.selectedDevice = null;
     return roomDevices;
   }
@@ -157,13 +157,8 @@ class MyDriver extends Driver {
     });
 
     session.setHandler('list_healthboxes_selection', async data => {
-      this.log('handler: list_healthboxes_selection', data);
       this.selectedDevice = data[0];
       this.homey.settings.set('ip', this.selectedDevice.settings.ip);
-    });
-
-    session.setHandler('add_devices', async () => {
-      this.log('-------- devices added!');
     });
   }
 
@@ -183,17 +178,17 @@ class MyDriver extends Driver {
         });
       },
     );
+
     const flowActionFlowrate = this.homey.flow.getActionCard('set-flowrate');
     flowActionFlowrate.registerRunListener(async (args, state) => {
       const level = args.flowrate;
-      const [hours, minutes] = args.activationtime.split(':');
-      const seconds = hours * 60 * 60 + minutes * 60;
+      const seconds = args.activationtime;
       if (args.rooms.allrooms) {
         await Promise.all(this.getDevices().map(async device => {
-          if (device.getClass() !== 'fan') device.setAllValuesRequest(true, level, seconds);
+          if (device.getClass() !== 'fan') device.setOptions({ boost: true, level, seconds });
         }));
       } else {
-        await this.getDevice(args.rooms.data).setAllValuesRequest(true, level, seconds);
+        await this.getDevice(args.rooms.data).setOptions({ boost: true, level, seconds });
       }
     });
 
@@ -204,7 +199,6 @@ class MyDriver extends Driver {
         const results = [];
         results.push({ name: this.homey.__('rooms'), allrooms: true });
         this.getDevices().map(async device => {
-          this.log('Getting devices,');
           results.push({ name: device.getName(), allrooms: false, data: device.getData() });
         });
         return results.filter(result => {
@@ -216,10 +210,10 @@ class MyDriver extends Driver {
     stopBoostCardFlow.registerRunListener(async (args, state) => {
       if (args.rooms.allrooms) {
         await Promise.all(this.getDevices().map(async device => {
-          if (device.getClass() !== 'fan') device.setAllValuesRequest(false, 0, 0);
+          if (device.getClass() !== 'fan') device.setOptions({ boost: false });
         }));
       } else {
-        await this.getDevice(args.rooms.data).setAllValuesRequest(true, 0, 0);
+        await this.getDevice(args.rooms.data).setOptions({ boost: false });
       }
     });
   }
@@ -230,7 +224,7 @@ class MyDriver extends Driver {
       const resp = await axios.get(url, { timeout: _timeout });
       return resp.data;
     } catch (error) {
-      this.log(`ERROR at url ${url}`);
+      this.log(`Fetch error at url ${url}`);
       return false;
     }
   }

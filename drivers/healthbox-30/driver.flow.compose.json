@@ -12,15 +12,12 @@
                     "en": "RPM",
                     "nl": "RPM"
                 },
-                "example": {
-                    "en": "Current RPM",
-                    "nl": "Huidig RPM"
-                }
+                "example": 420
             }],
             "$filter": "class=fan"
         },
         {
-            "id": "flowrate_changed",
+            "id": "measure_flowrate_changed",
             "title": {
                 "en": "Flowrate changed",
                 "nl": "Debiet veranderd"
@@ -32,43 +29,20 @@
                     "en": "Flowrate",
                     "nl": "Debiet"
                 },
-                "example": {
-                    "en": "Current flowrate",
-                    "hl": "Huidig debiet"
-                }
+                "example": 5
             }]
-        },
-        {
-            "id": "timeleft_changed",
-            "title": {
-                "en": "Remaining time changed",
-                "nl": "Resterende tijd over"
-            },
-            "tokens": [{
-                "type": "string",
-                "name": "timeleft",
-                "title": {
-                    "en": "Remaining time",
-                    "nl": "Resterende tijd"
-                },
-                "example": {
-                    "en": "Remaining time",
-                    "nl": "Resterende tijd"
-                }
-            }],
-            "$filter": "class=other"
         }
     ],
     "actions": [{
             "$filter": "class=fan",
             "id": "set-flowrate",
             "title": {
-                "en": "Set flowrate of",
-                "nl": "Zet het debiet van"
+                "en": "Set flow rate of a room for a specific time",
+                "nl": "Zet het debiet van een kamer voor een bepaalde tijd"
             },
             "titleFormatted": {
-                "en": "Set flowrate of [[rooms]] to [[flowrate]]% for [[activationtime]]",
-                "nl": "Zet debiet van [[rooms]] op [[flowrate]]% voor [[activationtime]]"
+                "en": "Set flowrate of [[rooms]] to [[flowrate]] for [[activationtime]] seconds",
+                "nl": "Zet debiet van [[rooms]] op [[flowrate]] voor [[activationtime]] seconden"
             },
             "args": [{
                     "type": "autocomplete",
@@ -92,14 +66,14 @@
                     }
                 },
                 {
-                    "type": "time",
+                    "type": "number",
                     "name": "activationtime",
                     "title": {
-                        "en": "Time",
-                        "nl": "Tijd"
+                        "en": "Time in seconds",
+                        "nl": "Tijd in seconden"
                     },
                     "placeholder": {
-                        "en": "00:15"
+                        "en": "900"
                     }
                 }
             ]
@@ -108,8 +82,8 @@
             "$filter": "class=fan",
             "id": "stop-boost",
             "title": {
-                "en": "Stop boost of",
-                "nl": "Stop boost van"
+                "en": "Stop boost for a specific room",
+                "nl": "Stop boost van een specifieke kamer"
             },
             "titleFormatted": {
                 "en": "Stop boost of [[rooms]]",
