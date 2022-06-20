@@ -1,5 +1,8 @@
 {
   "1.0.0": {
     "en": "Initial App"
+  },
+  "1.0.1": {
+    "en": "Icons fixed, Main device can now boost all rooms"
   }
 }
