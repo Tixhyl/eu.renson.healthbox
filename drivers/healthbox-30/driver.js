@@ -27,7 +27,12 @@ class MyDriver extends Driver {
       const req = await this.axiosFetch(this.homey.settings.get('ip'), '/api/data/current');
       if (!req) throw new Error('Request failed ');
 
-      const _aqi = req.sensor[0].parameter.index.value;
+      let _aqi = 0;
+      if (req.sensor !== undefined && req.sensor.length > 0 && req.sensor[0] !== undefined
+        && req.sensor[0].parameter !== undefined && req.sensor[0].parameter.index !== undefined
+        && req.sensor[0].parameter.index.value !== undefined) {
+        _aqi = req.sensor[0].parameter.index.value;
+      }
 
       const rooms = req.room;
       await Promise.all(this.getDevices().map(async element => {
@@ -38,7 +43,7 @@ class MyDriver extends Driver {
           element.setCapabilityValue('measure_rpm', req.rpm);
           element.setCapabilityValue('measure_flowrate', Math.round(req.flow * 1e1) / 1e1);
           element.setCapabilityValue('measure_power', Math.round(req.power * 1e1) / 1e1);
-          element.setCapabilityValue('airqualityindex', Math.round(_aqi));
+          element.setCapabilityValue('measure_airqualityindex', Math.round(_aqi));
         } else {
           // Room Ventilation statics
           const roomInfo = await this.axiosFetch(element.getStoreValue('address'), `/api/boost/${element.getStoreValue('id')}`);
@@ -136,7 +141,7 @@ class MyDriver extends Driver {
           address: this.selectedDevice.settings.ip,
           id: -1,
         },
-        capabilities: ['measure_rpm', 'measure_power', 'measure_flowrate', 'boost', 'level', 'timepicker', 'airqualityindex'],
+        capabilities: ['measure_rpm', 'measure_power', 'measure_flowrate', 'boost', 'level', 'timepicker', 'measure_airqualityindex'],
       };
       session.emit('list_devices', dev);
       roomDevices.push(dev);

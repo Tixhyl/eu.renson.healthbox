@@ -2,7 +2,7 @@
     "type": "number",
     "title": {
         "en": "Global Air Quality Index",
-        "nl": "Luchtkwaliteitsindex"
+        "nl": "Algemene Luchtkwaliteitsindex"
     },
     "uiComponent": "sensor",
     "getable": true,

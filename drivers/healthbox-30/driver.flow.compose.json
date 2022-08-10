@@ -31,6 +31,23 @@
                 },
                 "example": 5
             }]
+        },
+        {
+            "id": "airqualityindex_changed",
+            "title": {
+                "en": "Global Air Quality changed",
+                "nl": "Algemene Luchtkwaliteit veranderd"
+            },
+            "tokens": [{
+                "type": "number",
+                "name": "airqualityindex",
+                "title": {
+                    "en": "Global Air Quality Index",
+                    "nl": "Algemene Luchtkwaliteitsindex"
+                },
+                "example": 72
+            }],
+            "$filter": "class=fan"
         }
     ],
     "actions": [{
