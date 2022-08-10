@@ -4,5 +4,8 @@
   },
   "1.0.1": {
     "en": "Icons fixed, Main device can now boost all rooms"
+  },
+  "1.1.0": {
+    "en": "Added Global Air Quality Index metric "
   }
 }
