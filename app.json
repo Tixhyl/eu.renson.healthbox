@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "eu.renson.healthbox",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#00275b",
@@ -242,6 +242,21 @@
     }
   ],
   "capabilities": {
+    "airqualityindex": {
+      "type": "number",
+      "title": {
+        "en": "Global Air Quality Index",
+        "nl": "Luchtkwaliteitsindex"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": ""
+      },
+      "insights": true,
+      "icon": "/assets/airquality.svg"
+    },
     "boost": {
       "type": "boolean",
       "title": {
