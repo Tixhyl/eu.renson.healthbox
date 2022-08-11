@@ -13,5 +13,8 @@
   },
   "1.1.2": {
     "en": "Patch to automatically create new Air Quality Index capability"
+  },
+  "1.1.3": {
+    "en": "Fixed ventilation device flows"
   }
 }
