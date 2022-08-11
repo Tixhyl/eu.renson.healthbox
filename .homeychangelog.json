@@ -16,5 +16,8 @@
   },
   "1.1.3": {
     "en": "Fixed ventilation device flows"
+  },
+  "1.1.4": {
+    "en": "Minor test code fix"
   }
 }
