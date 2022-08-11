@@ -44,7 +44,9 @@ class MyDriver extends Driver {
           element.setCapabilityValue('measure_rpm', req.rpm);
           element.setCapabilityValue('measure_flowrate', Math.round(req.flow * 1e1) / 1e1);
           element.setCapabilityValue('measure_power', Math.round(req.power * 1e1) / 1e1);
-          element.setCapabilityValue('measure_airqualityindex', Math.round(_aqi));
+          if (element.hasCapability('measure_airqualityindex')) {
+            element.setCapabilityValue('measure_airqualityindex', Math.round(_aqi));
+          }
         } else {
           // Room Ventilation statics
           const roomInfo = await this.axiosFetch(element.getStoreValue('address'), `/api/boost/${element.getStoreValue('id')}`);
