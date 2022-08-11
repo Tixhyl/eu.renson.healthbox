@@ -1,60 +1,60 @@
 {
-    "id": "eu.renson.healthbox",
-    "version": "1.1.1",
-    "compatibility": ">=5.0.0",
-    "sdk": 3,
-    "brandColor": "#00275b",
-    "platforms": [
-        "local"
+  "id": "eu.renson.healthbox",
+  "version": "1.1.2",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "brandColor": "#00275b",
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Renson"
+  },
+  "description": {
+    "en": "Creating healthy spaces"
+  },
+  "category": [
+    "climate"
+  ],
+  "tags": {
+    "en": [
+      "renson",
+      "healthbox",
+      "healthbox 3.0",
+      "healthbox 3",
+      "ventilation",
+      "fan"
     ],
-    "name": {
-        "en": "Renson"
-    },
-    "description": {
-        "en": "Creating healthy spaces"
-    },
-    "category": [
-        "climate"
-    ],
-    "tags": {
-        "en": [
-            "renson",
-            "healthbox",
-            "healthbox 3.0",
-            "healthbox 3",
-            "ventilation",
-            "fan"
-        ],
-        "nl": [
-            "renson",
-            "healthbox",
-            "healthbox 3.0",
-            "healthbox 3",
-            "ventilatie",
-            "fan"
-        ]
-    },
-    "permissions": [],
-    "images": {
-        "small": "/assets/images/small.png",
-        "large": "/assets/images/large.png",
-        "xlarge": "/assets/images/xlarge.png"
-    },
-    "author": {
-        "name": "Christophe Rouckhout",
-        "email": "christophe132@gmail.com"
-    },
-    "contributing": {
-        "donate": {
-            "paypal": {
-                "username": "Tixhyl"
-            }
-        }
-    },
-    "bugs": {
-        "url": "https://github.com/Tixhyl/eu.renson.healthbox/issues"
-    },
-    "source": "https://github.com/Tixhyl/eu.renson.healthbox",
-    "homepage": "https://www.renson.eu",
-    "support": "mailto:info@tixhyl.be"
+    "nl": [
+      "renson",
+      "healthbox",
+      "healthbox 3.0",
+      "healthbox 3",
+      "ventilatie",
+      "fan"
+    ]
+  },
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Christophe Rouckhout",
+    "email": "christophe132@gmail.com"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "Tixhyl"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/Tixhyl/eu.renson.healthbox/issues"
+  },
+  "source": "https://github.com/Tixhyl/eu.renson.healthbox",
+  "homepage": "https://www.renson.eu",
+  "support": "mailto:info@tixhyl.be"
 }

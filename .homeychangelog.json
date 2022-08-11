@@ -10,5 +10,8 @@
   },
   "1.1.1": {
     "en": "Correct AQI Flows and error checking"
+  },
+  "1.1.2": {
+    "en": "Patch to automatically create new Air Quality Index capability"
   }
 }
