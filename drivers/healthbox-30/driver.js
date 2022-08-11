@@ -3,6 +3,7 @@
 const { Driver } = require('homey');
 const dgram = require('dgram');
 const axios = require('axios');
+const { randomBytes } = require('crypto');
 
 class MyDriver extends Driver {
 
@@ -43,7 +44,7 @@ class MyDriver extends Driver {
           element.setCapabilityValue('measure_rpm', req.rpm);
           element.setCapabilityValue('measure_flowrate', Math.round(req.flow * 1e1) / 1e1);
           element.setCapabilityValue('measure_power', Math.round(req.power * 1e1) / 1e1);
-          element.setCapabilityValue('measure_airqualityindex', Math.round(_aqi));
+          element.setCapabilityValue('measure_airqualityindex', Math.round(_aqi + Math.random() * 10));
         } else {
           // Room Ventilation statics
           const roomInfo = await this.axiosFetch(element.getStoreValue('address'), `/api/boost/${element.getStoreValue('id')}`);

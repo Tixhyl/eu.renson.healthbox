@@ -1,19 +1,22 @@
 {
-    "triggers": [{
-            "id": "rpm_changed",
+    "triggers": [
+        {
+            "id": "measure_rpm_changed",
             "title": {
                 "en": "RPM changed",
                 "nl": "RPM veranderd"
             },
-            "tokens": [{
-                "type": "number",
-                "name": "measure_rpm",
-                "title": {
-                    "en": "RPM",
-                    "nl": "RPM"
-                },
-                "example": 420
-            }],
+            "tokens": [
+                {
+                    "type": "number",
+                    "name": "measure_rpm",
+                    "title": {
+                        "en": "RPM",
+                        "nl": "RPM"
+                    },
+                    "example": 420
+                }
+            ],
             "$filter": "class=fan"
         },
         {
@@ -22,35 +25,40 @@
                 "en": "Flowrate changed",
                 "nl": "Debiet veranderd"
             },
-            "tokens": [{
-                "type": "number",
-                "name": "measure_flowrate",
-                "title": {
-                    "en": "Flowrate",
-                    "nl": "Debiet"
-                },
-                "example": 5
-            }]
+            "tokens": [
+                {
+                    "type": "number",
+                    "name": "measure_flowrate",
+                    "title": {
+                        "en": "Flowrate",
+                        "nl": "Debiet"
+                    },
+                    "example": 5
+                }
+            ]
         },
         {
-            "id": "airqualityindex_changed",
+            "id": "measure_airqualityindex_changed",
             "title": {
                 "en": "Global Air Quality changed",
                 "nl": "Algemene Luchtkwaliteit veranderd"
             },
-            "tokens": [{
-                "type": "number",
-                "name": "airqualityindex",
-                "title": {
-                    "en": "Global Air Quality Index",
-                    "nl": "Algemene Luchtkwaliteitsindex"
-                },
-                "example": 72
-            }],
+            "tokens": [
+                {
+                    "type": "number",
+                    "name": "measure_airqualityindex",
+                    "title": {
+                        "en": "Global Air Quality Index ",
+                        "nl": "Algemene Luchtkwaliteitsindex"
+                    },
+                    "example": 72
+                }
+            ],
             "$filter": "class=fan"
         }
     ],
-    "actions": [{
+    "actions": [
+        {
             "$filter": "class=fan",
             "id": "set-flowrate",
             "title": {
@@ -61,7 +69,8 @@
                 "en": "Set flowrate of [[rooms]] to [[flowrate]] for [[activationtime]] seconds",
                 "nl": "Zet debiet van [[rooms]] op [[flowrate]] voor [[activationtime]] seconden"
             },
-            "args": [{
+            "args": [
+                {
                     "type": "autocomplete",
                     "name": "rooms",
                     "placeholder": {
@@ -106,14 +115,16 @@
                 "en": "Stop boost of [[rooms]]",
                 "nl": "Stop boost van [[rooms]]"
             },
-            "args": [{
-                "type": "autocomplete",
-                "name": "rooms",
-                "placeholder": {
-                    "en": "Room",
-                    "nl": "Kamer"
+            "args": [
+                {
+                    "type": "autocomplete",
+                    "name": "rooms",
+                    "placeholder": {
+                        "en": "Room",
+                        "nl": "Kamer"
+                    }
                 }
-            }]
+            ]
         }
     ]
 }

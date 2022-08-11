@@ -70,10 +70,8 @@ class MyDevice extends Device {
     this.registerCapabilityListener('level', this.setOptions.bind(this)); */
 
     if (this.getClass() === 'fan' && this.hasCapability('measure_airqualityindex') === false) {
-      this.log('Adding capability');
+      this.log('Adding new capability');
       await this.addCapability('measure_airqualityindex');
-    } else {
-      this.log('Capability already exists');
     }
 
     this.registerMultipleCapabilityListener(['boost', 'timepicker', 'level'], this.setOptions.bind(this));

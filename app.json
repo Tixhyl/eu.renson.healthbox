@@ -61,7 +61,7 @@
   "flow": {
     "triggers": [
       {
-        "id": "rpm_changed",
+        "id": "measure_rpm_changed",
         "title": {
           "en": "RPM changed",
           "nl": "RPM veranderd"
@@ -111,7 +111,7 @@
         ]
       },
       {
-        "id": "airqualityindex_changed",
+        "id": "measure_airqualityindex_changed",
         "title": {
           "en": "Global Air Quality changed",
           "nl": "Algemene Luchtkwaliteit veranderd"
@@ -119,9 +119,9 @@
         "tokens": [
           {
             "type": "number",
-            "name": "airqualityindex",
+            "name": "measure_airqualityindex",
             "title": {
-              "en": "Global Air Quality Index",
+              "en": "Global Air Quality Index ",
               "nl": "Algemene Luchtkwaliteitsindex"
             },
             "example": 72
