@@ -69,6 +69,13 @@ class MyDevice extends Device {
     this.registerCapabilityListener('timepicker', this.setOptions.bind(this));
     this.registerCapabilityListener('level', this.setOptions.bind(this)); */
 
+    if (this.getClass() === 'fan' && this.hasCapability('measure_airqualityindex') === false) {
+      this.log('Adding capability');
+      await this.addCapability('measure_airqualityindex');
+    } else {
+      this.log('Capability already exists');
+    }
+
     this.registerMultipleCapabilityListener(['boost', 'timepicker', 'level'], this.setOptions.bind(this));
 
     /* this.registerCapabilityListener('timepicker', async value => {
