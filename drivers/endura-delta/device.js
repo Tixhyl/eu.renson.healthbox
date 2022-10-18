@@ -10,6 +10,64 @@ class MyDevice extends Device {
      */
     async onInit() {
         this.log('MyDevice has been initialized');
+
+
+        await this.setSettings({
+            name: this.homey.settings.get('name'),
+            endura_ip: this.homey.settings.get('endura_ip'),
+        });
+        if (this.hasCapability('measure_co2.airquality') === false) {
+            await this.addCapability('measure_co2.airquality');
+        }
+        if (this.hasCapability('measure_co2.co2') === false) {
+            await this.addCapability('measure_co2.co2');
+        }
+        if (this.hasCapability('measure_humidity') === false) {
+            await this.addCapability('measure_humidity');
+        }
+        if (this.hasCapability('measure_temperature.indoor') === false) {
+            await this.addCapability('measure_temperature.indoor');
+        }
+        if (this.hasCapability('measure_temperature.outdoor') === false) {
+            await this.addCapability('measure_temperature.outdoor');
+        }
+
+        this.getProductionData();
+
+        this.homey.setInterval(async () => {
+            await this.getProductionData();
+        }, 1000 * 60 * 1);
+
+    }
+
+    async getProductionData() {
+        try {
+            console.log(this.homey.settings.get("name"));
+            // const settings = this.getSettings();
+            let ip = this.homey.settings.get('endura_ip');
+
+            console.log(ip);
+
+            let enduraApi = new EnduraApi(ip);
+            let baseSession = await enduraApi.getData();
+            const deviceData = await enduraApi.processData(baseSession);
+            const [deviceName, deviceCO2, deviceIndoorAirQuality, deviceCurrentVentilationLevel, deviceExternalTemperature, deviceInternalTemperature, deviceHumidity, deviceMeasuredSupAirflow, deviceMeasuredEtaAirflow, deviceMac] = await Promise.all([deviceData.deviceName, deviceData.CO2, deviceData.indoorAirQuality, deviceData.currentVentilationLevel, deviceData.externalTemperature, deviceData.internalTemperature, deviceData.humidity, deviceData.measuredSupAirflow, deviceData.measuredEtaAirflow, deviceData.deviceMAC]);
+
+            await this.setCapabilityValue('measure_co2.airquality', deviceIndoorAirQuality);
+            console.log(deviceCO2);
+            await this.setCapabilityValue('measure_co2.co2', deviceCO2);
+            await this.setCapabilityValue('measure_humidity', deviceHumidity);
+            await this.setCapabilityValue('measure_temperature.indoor', deviceInternalTemperature);
+            await this.setCapabilityValue('measure_temperature.outdoor', deviceExternalTemperature);
+
+
+            if (!this.getAvailable()) {
+                await this.setAvailable();
+            }
+        } catch (error) {
+            this.error(`Unavailable (${error})`);
+            this.setUnavailable(`Error retrieving data (${error})`);
+        }
     }
 
     /**
@@ -29,6 +87,14 @@ class MyDevice extends Device {
      */
     async onSettings({ oldSettings, newSettings, changedKeys }) {
         this.log('MyDevice settings where changed');
+        console.log(changedKeys);
+        console.log(newSettings);
+
+        for (const key in newSettings) {
+            this.homey.settings.set(key, newSettings[key]);
+            console.log(`${key}: ${newSettings[key]}`);
+        }
+        this.getProductionData();
     }
 
     /**

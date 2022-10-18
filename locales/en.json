@@ -1,3 +1,12 @@
 {
-  "rooms": "All rooms"
+  "rooms": "All rooms",
+  "pair": {
+    "endura": {
+      "title": "Please enter your Renson Endura IP address:",
+      "check": "Check connection",
+      "ip": "IP Address",
+      "connection_ok": "Connection successful",
+      "connection_error": "Connection not possible"
+    }
+  }
 }
