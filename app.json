@@ -65,10 +65,44 @@
       },
       "class": "fan",
       "capabilities": [
-        "measure_co2",
+        "measure_co2.airquality",
+        "measure_co2.co2",
         "measure_humidity",
-        "measure_temperature"
+        "measure_temperature.indoor",
+        "measure_temperature.outdoor"
       ],
+      "capabilitiesOptions": {
+        "measure_co2.airquality": {
+          "title": {
+            "en": "Airquality",
+            "nl": "Luchtkwaliteit"
+          }
+        },
+        "measure_co2.co2": {
+          "title": {
+            "en": "CO2",
+            "nl": "CO2"
+          }
+        },
+        "measure_humidity": {
+          "title": {
+            "en": "Humidity",
+            "nl": "Luchtvochtigheid"
+          }
+        },
+        "measure_temperature.indoor": {
+          "title": {
+            "en": "Extracted air temperature",
+            "nl": "Temperatuur extractielucht"
+          }
+        },
+        "measure_temperature.outdoor": {
+          "title": {
+            "en": "Outside air temperature",
+            "nl": "Temperatuur buitenlucht"
+          }
+        }
+      },
       "platforms": [
         "local"
       ],
@@ -82,10 +116,44 @@
       },
       "pair": [
         {
-          "id": "pair"
+          "id": "pair",
+          "navigation": {
+            "next": "list_my_devices"
+          }
+        },
+        {
+          "id": "list_my_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices",
+            "prev": "pair"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
         }
       ],
-      "id": "endura-delta"
+      "id": "endura-delta",
+      "settings": [
+        {
+          "id": "name",
+          "type": "text",
+          "label": {
+            "en": "Unit name"
+          }
+        },
+        {
+          "id": "endura_ip",
+          "type": "text",
+          "label": {
+            "en": "IP"
+          }
+        }
+      ]
     },
     {
       "name": {

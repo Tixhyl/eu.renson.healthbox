@@ -1,3 +1,31 @@
+<script type="application/javascript">
+    Homey.setTitle(Homey.__("pair.endura.title"));
+    Homey.emit("getSettings").then(function (settings) {
+        if (settings) {
+            document.getElementById('ip').value = settings.ip
+        }
+    });
+
+    function settingsChanged() {
+        let value = {
+            "ip": document.getElementById('ip').value
+        };
+        Homey.emit("settingsChanged", value).then(function (result) {
+        });
+    }
+
+    function check() {
+        let value = {
+            "ip": document.getElementById('ip').value
+        };
+        Homey.emit("check", value).then(function (result) {
+            console.log(result);
+            Homey.alert(result);
+        });
+
+    }
+</script>
+
 <style type="text/css">
     .form-wrapper {
         width: 100%;
@@ -29,39 +57,12 @@
 
 <base target="_parent" />
 <div class="form-wrapper">
-    <p>Please enter your Renson Endura IP address:</p>
     <div class="input-field">
-        <label for="ip">IP address</label>
+        <label for="ip"><span data-i18n="pair.endura.ip"></span></label>
         <input type="text" minlength="7" maxlength="15"
             pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$" id="ip"
-            placeholder="IP address" value="172.30.27.52" />
+            placeholder="IP address" value="" oninput="settingsChanged()" />
     </div>
-    <button class="submit-button" id="validate">Connect</button>
+    <button class="submit-button" id="check" onclick="check()"><span data-i18n="pair.endura.check"></span></button>
 
 </div>
-
-<script type="text/javascript">
-    $(() => {
-        $("#validate").click(() => {
-            Homey.showLoadingOverlay();
-
-            var ip = $("#ip").val();
-
-            Homey.emit("validate", { ip }, (error, deviceDefinition) => {
-                if (error) {
-                    Homey.hideLoadingOverlay();
-                    Homey.alert(error);
-                } else {
-                    Homey.createDevice(deviceDefinition, (error, result) => {
-                        if (error) {
-                            Homey.hideLoadingOverlay();
-                            Homey.alert(error);
-                        } else {
-                            Homey.done();
-                        }
-                    });
-                }
-            });
-        });
-    });
-</script>

@@ -1,0 +1,16 @@
+[
+    {
+        "id": "name",
+        "type": "text",
+        "label": {
+            "en": "Unit name"
+        }
+    },
+    {
+        "id": "endura_ip",
+        "type": "text",
+        "label": {
+            "en": "IP"
+        }
+    }
+]
