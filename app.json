@@ -58,6 +58,85 @@
   "source": "https://github.com/Tixhyl/eu.renson.healthbox",
   "homepage": "https://www.renson.eu",
   "support": "mailto:info@tixhyl.be",
+  "drivers": [
+    {
+      "name": {
+        "en": "Endura delta"
+      },
+      "class": "fan",
+      "capabilities": [
+        "measure_co2",
+        "measure_humidity",
+        "measure_temperature"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/endura-delta/assets/images/small.png",
+        "large": "/drivers/endura-delta/assets/images/large.png",
+        "xlarge": "/drivers/endura-delta/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "pair"
+        }
+      ],
+      "id": "endura-delta"
+    },
+    {
+      "name": {
+        "en": "Healthbox 3.0"
+      },
+      "class": "fan",
+      "capabilities": [
+        "measure_flowrate",
+        "boost",
+        "timeleft",
+        "level",
+        "timepicker"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/healthbox-30/assets/images/small.png",
+        "large": "/drivers/healthbox-30/assets/images/large.png",
+        "xlarge": "/drivers/healthbox-30/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_healthboxes",
+          "template": "list_devices",
+          "options": {
+            "singular": true
+          },
+          "navigation": {
+            "next": "list_rooms"
+          }
+        },
+        {
+          "id": "list_rooms",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices",
+            "prev": "list_healthboxes"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "healthbox-30"
+    }
+  ],
   "flow": {
     "triggers": [
       {
@@ -215,57 +294,6 @@
       }
     ]
   },
-  "drivers": [
-    {
-      "name": {
-        "en": "Healthbox 3.0"
-      },
-      "class": "fan",
-      "capabilities": [
-        "measure_flowrate",
-        "boost",
-        "timeleft",
-        "level",
-        "timepicker"
-      ],
-      "platforms": [
-        "local"
-      ],
-      "connectivity": [
-        "lan"
-      ],
-      "images": {
-        "small": "/drivers/healthbox-30/assets/images/small.png",
-        "large": "/drivers/healthbox-30/assets/images/large.png",
-        "xlarge": "/drivers/healthbox-30/assets/images/xlarge.png"
-      },
-      "pair": [
-        {
-          "id": "list_healthboxes",
-          "template": "list_devices",
-          "options": {
-            "singular": true
-          },
-          "navigation": {
-            "next": "list_rooms"
-          }
-        },
-        {
-          "id": "list_rooms",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices",
-            "prev": "list_healthboxes"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
-      ],
-      "id": "healthbox-30"
-    }
-  ],
   "capabilities": {
     "boost": {
       "type": "boolean",
