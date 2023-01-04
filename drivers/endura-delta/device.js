@@ -63,8 +63,6 @@ class MyDevice extends Device {
             const [deviceName, deviceCO2, deviceIndoorAirQuality, deviceCurrentVentilationLevel, deviceExternalTemperature, deviceInternalTemperature, deviceHumidity, deviceMeasuredSupAirflow, deviceMeasuredEtaAirflow, deviceMac] = await Promise.all([deviceData.deviceName, deviceData.CO2, deviceData.indoorAirQuality, deviceData.currentVentilationLevel, deviceData.externalTemperature, deviceData.internalTemperature, deviceData.humidity, deviceData.measuredSupAirflow, deviceData.measuredEtaAirflow, deviceData.deviceMAC]);
 
             await this.setCapabilityValue('measure_co2.airquality', deviceIndoorAirQuality);
-            console.log("deviceCurrentVentilationLevel");
-            console.log(deviceCurrentVentilationLevel);
             await this.setCapabilityValue('measure_co2.co2', deviceCO2);
             await this.setCapabilityValue('measure_humidity', deviceHumidity);
             await this.setCapabilityValue('measure_temperature.indoor', deviceInternalTemperature);
