@@ -67,7 +67,7 @@ class MyDevice extends Device {
             await this.setCapabilityValue('measure_humidity', deviceHumidity);
             await this.setCapabilityValue('measure_temperature.indoor', deviceInternalTemperature);
             await this.setCapabilityValue('measure_temperature.outdoor', deviceExternalTemperature);
-            await this.setCapabilityValue('measure_power.current_level', parseInt(deviceCurrentVentilationLevel.split("Program Level")[1]));
+            await this.setCapabilityValue('measure_power.current_level', parseInt(deviceCurrentVentilationLevel.split("Level")[1]));
             await this.setCapabilityValue('measure_wind_strength.pulse_airflow', parseInt(deviceMeasuredSupAirflow));
             await this.setCapabilityValue('measure_wind_strength.eta_airflow', parseInt(deviceMeasuredEtaAirflow));
 
