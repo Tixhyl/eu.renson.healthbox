@@ -31,6 +31,15 @@ class MyDevice extends Device {
         if (this.hasCapability('measure_temperature.outdoor') === false) {
             await this.addCapability('measure_temperature.outdoor');
         }
+        if (this.hasCapability('measure_power.current_level') === false) {
+            await this.addCapability('measure_power.current_level');
+        }
+        if (this.hasCapability('measure_wind_strength.pulse_airflow') === false) {
+            await this.addCapability('measure_wind_strength.pulse_airflow');
+        }
+        if (this.hasCapability('measure_wind_strength.eta_airflow') === false) {
+            await this.addCapability('measure_wind_strength.eta_airflow');
+        }
 
         this.getProductionData();
 
@@ -54,11 +63,13 @@ class MyDevice extends Device {
             const [deviceName, deviceCO2, deviceIndoorAirQuality, deviceCurrentVentilationLevel, deviceExternalTemperature, deviceInternalTemperature, deviceHumidity, deviceMeasuredSupAirflow, deviceMeasuredEtaAirflow, deviceMac] = await Promise.all([deviceData.deviceName, deviceData.CO2, deviceData.indoorAirQuality, deviceData.currentVentilationLevel, deviceData.externalTemperature, deviceData.internalTemperature, deviceData.humidity, deviceData.measuredSupAirflow, deviceData.measuredEtaAirflow, deviceData.deviceMAC]);
 
             await this.setCapabilityValue('measure_co2.airquality', deviceIndoorAirQuality);
-            console.log(deviceCO2);
             await this.setCapabilityValue('measure_co2.co2', deviceCO2);
             await this.setCapabilityValue('measure_humidity', deviceHumidity);
             await this.setCapabilityValue('measure_temperature.indoor', deviceInternalTemperature);
             await this.setCapabilityValue('measure_temperature.outdoor', deviceExternalTemperature);
+            await this.setCapabilityValue('measure_power.current_level', parseInt(deviceCurrentVentilationLevel.split("Level")[1]));
+            await this.setCapabilityValue('measure_wind_strength.pulse_airflow', parseInt(deviceMeasuredSupAirflow));
+            await this.setCapabilityValue('measure_wind_strength.eta_airflow', parseInt(deviceMeasuredEtaAirflow));
 
 
             if (!this.getAvailable()) {

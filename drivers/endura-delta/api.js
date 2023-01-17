@@ -57,6 +57,7 @@ class EnduraApi {
                 }
                 if (data["ModifiedItems"][index]["Name"] == "Current ventilation level") {
                     currentVentilationLevel = data["ModifiedItems"][index]["Value"];
+                    console.log(currentVentilationLevel);
                 }
                 if (data["ModifiedItems"][index]["Name"] == "T21") {
                     externalTemperature = parseInt(data["ModifiedItems"][index]["Value"]);

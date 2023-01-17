@@ -69,7 +69,10 @@
         "measure_co2.co2",
         "measure_humidity",
         "measure_temperature.indoor",
-        "measure_temperature.outdoor"
+        "measure_temperature.outdoor",
+        "measure_power.current_level",
+        "measure_wind_strength.pulse_airflow",
+        "measure_wind_strength.eta_airflow"
       ],
       "capabilitiesOptions": {
         "measure_co2.airquality": {
@@ -100,6 +103,36 @@
           "title": {
             "en": "Outside air temperature",
             "nl": "Temperatuur buitenlucht"
+          }
+        },
+        "measure_power.current_level": {
+          "title": {
+            "en": "Current level",
+            "nl": "Huidig niveau"
+          },
+          "units": {
+            "en": "",
+            "nl": ""
+          }
+        },
+        "measure_wind_strength.pulse_airflow": {
+          "title": {
+            "en": "Pulsion airflow",
+            "nl": "Pulsie airflow"
+          },
+          "units": {
+            "en": "m3/h",
+            "nl": "m3/u"
+          }
+        },
+        "measure_wind_strength.eta_airflow": {
+          "title": {
+            "en": "Extraction airflow",
+            "nl": "Extractie airflow"
+          },
+          "units": {
+            "en": "m3/h",
+            "nl": "m3/u"
           }
         }
       },
