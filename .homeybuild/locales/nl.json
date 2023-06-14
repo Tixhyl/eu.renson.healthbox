@@ -1,0 +1,12 @@
+{
+  "rooms": "Alle kamers",
+  "pair": {
+    "endura": {
+      "title": "Gelieve uw Renson Endura IP adres in te geven:",
+      "check": "Verbind",
+      "ip": "IP adres",
+      "connection_ok": "Verbinding gelukt",
+      "connection_error": "Verbinding mislukt"
+    }
+  }
+}
