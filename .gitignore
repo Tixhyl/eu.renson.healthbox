@@ -145,3 +145,4 @@ dist
 
 # Added by Homey CLI
 /.homeybuild/
+drivers/healthbox-30/main.js

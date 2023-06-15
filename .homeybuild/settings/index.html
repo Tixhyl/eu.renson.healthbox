@@ -19,9 +19,15 @@
       <legend class="homey-form-legend">Healthbox 3.0 Settings</legend>
 
       <div class="homey-form-group">
-        <label class="homey-form-label" for="ip">IP</label>
+        <label class="homey-form-label" for="ip">IP address)</label>
         <input class="homey-form-input" id="ip" type="text" value="" />
       </div>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="key">API Key</label>
+        <input class="homey-form-input" id="key" type="text" value="" />
+      </div>
+
     </fieldset>
 
     <button id="save" class="homey-button-primary-full">Save changes</button>
@@ -33,6 +39,7 @@
         Homey.ready();
 
         var ipElement = document.getElementById("ip");
+        var keyElement = document.getElementById("key");
         var saveElement = document.getElementById("save");
 
         Homey.get("ip", function (err, ip) {
@@ -40,10 +47,19 @@
           ipElement.value = ip;
         });
 
+        Homey.get("api_key", function (err, key) {
+          if (err) return Homey.alert(err);
+          keyElement.value = key;
+        });
+
         saveElement.addEventListener("click", function (e) {
           Homey.set("ip", ipElement.value, function (err) {
             if (err) return Homey.alert(err);
           });
+          Homey.set("api_key", keyElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          saveElement.innerHTML = "Saved settings!";
         });
       }
     </script>

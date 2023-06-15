@@ -4,6 +4,7 @@ const { Driver } = require('homey');
 const dgram = require('dgram');
 const axios = require('axios');
 const { randomBytes } = require('crypto');
+const { HealthboxApi } = require('./api');
 
 class MyDriver extends Driver {
 
@@ -13,10 +14,21 @@ class MyDriver extends Driver {
   async onInit() {
     this.setFlows();
     this.interval = 10000;
-    this.updateLoop();
     this.loopErrors = 0;
-    this.log(this.homey.settings)
-    this.log('Driver initialized, ip=', this.homey.settings.get('ip'));
+    this.homey.settings.on('set', async (param) => {
+      this.log("Settings changed!");
+      this.initHB();
+    })
+    this.initHB();
+    this.updateLoop();
+  }
+
+  async initHB() {
+    this.log('Driver initialized, with ip', this.homey.settings.get('ip'));
+    this.hb_api = new HealthboxApi('192.168.30.41')
+    const keyset = await this.hb_api.verifyAccessKey(this.homey.settings.get('api_key'))
+    this.log("Api Key", keyset)
+    this.sensors_enabled = keyset.valid
   }
 
   async updateLoop() {
@@ -58,8 +70,10 @@ class MyDriver extends Driver {
           element.setCapabilityValue('boost', roomInfo.enable);
           element.setCapabilityValue('level', roomInfo.level);
           element.setCapabilityValue('timeleft', new Date(roomInfo.remaining * 1000).toISOString().substr(11, 8));
-          element.setCapabilityValue('measure_temperature', Math.round(matchedRoom.sensor[0].parameter.temperature.value * 1e1) / 1e1);
-          element.setCapabilityValue('measure_humidity', Math.round(matchedRoom.sensor[1].parameter.humidity.value));
+          if (this.sensors_enabled) {
+            element.setCapabilityValue('measure_temperature', Math.round(matchedRoom.sensor[0].parameter.temperature.value * 1e1) / 1e1);
+            element.setCapabilityValue('measure_humidity', Math.round(matchedRoom.sensor[1].parameter.humidity.value));
+          } 
         }
         if (!element.getAvailable()) await element.setAvailable();
       }));
