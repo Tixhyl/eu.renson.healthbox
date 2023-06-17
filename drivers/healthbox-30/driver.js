@@ -25,7 +25,7 @@ class MyDriver extends Driver {
 
   async initHB() {
     this.log('Driver initialized, with ip', this.homey.settings.get('ip'));
-    this.hb_api = new HealthboxApi('192.168.30.41')
+    this.hb_api = new HealthboxApi(this.homey.settings.get('ip'))
     const keyset = await this.hb_api.verifyAccessKey(this.homey.settings.get('api_key'))
     this.log("Api Key", keyset)
     this.sensors_enabled = keyset.valid

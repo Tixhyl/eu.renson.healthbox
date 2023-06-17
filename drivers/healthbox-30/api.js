@@ -1,6 +1,4 @@
 const fetch = require('node-fetch');
-// const util = require('util');
-// const { URLSearchParams } = require('url');
 
 class HealthboxApi {
 
@@ -8,13 +6,14 @@ class HealthboxApi {
         this.ip = ip;
     }
 
-    async #getPrivilegedAccessState() {
+    async getPrivilegedAccessState() {
         try {
             const response = await fetch(`http://${this.ip}/v2/api/api_key/status`);
             const data = await response.json();
             return data
         } catch (error) {
-            throw error;
+            console.log("Error while getting access state", error);
+            return false
         }
     }
 
@@ -28,13 +27,16 @@ class HealthboxApi {
             const status_code = await response.status
             return (status_code == 200)
         } catch (error) {
-            throw error;
+            console.log("Error while setting access key", error);
+            return false
         }
     }
 
     async verifyAccessKey(key, uploaded = false) {
         try {
-            const state = await this.#getPrivilegedAccessState()
+            const state = await this.getPrivilegedAccessState()
+            if (!state)
+                return {'valid': false, 'msg': 'Failed to get Access State'}
             if (state.state == "valid") {
                 // all fine
                 console.log("Valid!")
@@ -61,6 +63,7 @@ class HealthboxApi {
             }
         } catch (error) {
             console.log("Error while checking key", error)
+            return {'valid': false, 'msg': 'Error while processing key'}
         }
     }
 
