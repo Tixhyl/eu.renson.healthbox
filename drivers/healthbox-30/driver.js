@@ -70,7 +70,7 @@ class MyDriver extends Driver {
           element.setCapabilityValue('boost', roomInfo.enable);
           element.setCapabilityValue('level', roomInfo.level);
           element.setCapabilityValue('timeleft', new Date(roomInfo.remaining * 1000).toISOString().substr(11, 8));
-          if (this.sensors_enabled) {
+          if (this.sensors_enabled && element.hasCapability('measure_temperature') && element.hasCapability('measure_humidity')) {
             element.setCapabilityValue('measure_temperature', Math.round(matchedRoom.sensor[0].parameter.temperature.value * 1e1) / 1e1);
             element.setCapabilityValue('measure_humidity', Math.round(matchedRoom.sensor[1].parameter.humidity.value));
           } 
