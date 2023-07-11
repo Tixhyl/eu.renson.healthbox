@@ -1,4 +1,4 @@
-Adds support for the Healthbox 3.0 ventilation systems from Renson.
+Adds support for the Healthbox 3.0 ventilation system from Renson Ventilation NV.
 Control and monitor your ventilation system.
 
 In order to monitor the temperature and humidity in all zones, an API key is required. 
@@ -15,4 +15,5 @@ Kind regards,
 
 The serial and warranty number can be found under Settings > Installation Details of your Renson App.
 
+The Trademarks and Copyrights on this website are the exclusive property of Renson Ventilation NV. All Rights Reserved
 The logo and banner image are © Copyright Renson. All Rights Reserved.
