@@ -8,7 +8,7 @@
     "local"
   ],
   "name": {
-    "en": "Renson"
+    "en": "Renson®"
   },
   "description": {
     "en": "Creating healthy spaces"
@@ -55,6 +55,6 @@
     "url": "https://github.com/Tixhyl/eu.renson.healthbox/issues"
   },
   "source": "https://github.com/Tixhyl/eu.renson.healthbox",
-  "homepage": "https://www.renson.eu",
+  "homepage": "https://renson.net/nl-be/producten/ventilatie/healthbox-3-0",
   "support": "mailto:info@tixhyl.be"
 }
