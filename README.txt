@@ -15,5 +15,5 @@ Kind regards,
 
 The serial and warranty number can be found under Settings > Installation Details of your Renson App.
 
-The Trademarks and Copyrights on this website are the exclusive property of Renson Ventilation NV. All Rights Reserved
+The Trademarks and Copyrights related to the Renson® application are the exclusive property of Renson Ventilation NV. All Rights Reserved
 The logo and banner image are © Copyright Renson. All Rights Reserved.

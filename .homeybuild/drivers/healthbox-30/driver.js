@@ -64,7 +64,6 @@ class MyDriver extends Driver {
           // Room Ventilation statics
           const roomInfo = await this.axiosFetch(`/api/boost/${element.getStoreValue('id')}`);
           if (!roomInfo) throw new Error('No roominfo found');
-
           const matchedRoom = rooms[element.getStoreValue('id')];
           element.setCapabilityValue('measure_flowrate', Math.round(matchedRoom.actuator[0].parameter.flow_rate.value * 1e1) / 1e1);
           element.setCapabilityValue('boost', roomInfo.enable);
@@ -74,6 +73,16 @@ class MyDriver extends Driver {
             element.setCapabilityValue('measure_temperature', Math.round(matchedRoom.sensor[0].parameter.temperature.value * 1e1) / 1e1);
             element.setCapabilityValue('measure_humidity', Math.round(matchedRoom.sensor[1].parameter.humidity.value));
           } 
+          try {
+            if (this.sensors_enabled && element.hasCapability('measure_co2') && element.hasCapability('measure_airqualityindex')) {
+            element.setCapabilityValue('measure_co2', Math.round(matchedRoom.sensor[2].parameter.concentration.value));
+            // element.setCapabilityValue('measure_voc', Math.round(matchedRoom.sensor[1].parameter.humidity.value));
+            element.setCapabilityValue('measure_airqualityindex', Math.round(matchedRoom.sensor[3].parameter.index.value));
+          } 
+          } catch (error) {
+            this.log("Could not get sensor data for", element.getName())
+          }
+          
         }
         if (!element.getAvailable()) await element.setAvailable();
       }));
@@ -123,7 +132,7 @@ class MyDriver extends Driver {
       if (err) this.error('Error!', err);
       else this.log('Message sent!');
     });
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 10000));
     this.log('Getting Healthboxes done!');
     return devices;
   }
@@ -131,26 +140,27 @@ class MyDriver extends Driver {
   async getRooms(session) {
     const roomDevices = [];
     const res = await this.axiosFetch('/api/data/current');
+    this.log("res", res);
     if (!res) return [];
-    if (res.room && res.room.length) {
-      await Promise.all(res.room.map(async element => {
-        const room = await this.axiosFetch(`/api/boost/${element.id}`);
-        if (!room) return;
-        this.log(element.id, element.name, element.actuator[0].parameter.flow_rate.value, 'm³/h', 'boost enabled', room.enable, 'boost value', room.level, 'remaining', room.remaining);
-        const dev = {
-          name: element.name,
-          class: 'other',
-          data: { id: `${this.selectedDevice.data.id}#${element.id}` },
-          store: {
-            address: this.selectedDevice.settings.ip,
-            id: element.id,
-          },
-          icon: '/room.svg',
-        };
-        session.emit('list_devices', dev);
-        roomDevices.push(dev);
-      }));
-    }
+
+    await Promise.all(Object.entries(res.room).map(async ([roomNumber, roomData]) => {
+      this.log(`Room found with id ${roomNumber} and name ${roomData.name}`)
+      const room = await this.axiosFetch(`/api/boost/${roomNumber}`);
+      if (!room) return;
+      const dev = {
+        name: roomData.name,
+        class: 'other',
+        data: { id: `${this.selectedDevice.data.id}#${roomNumber}` },
+        store: {
+          address: this.selectedDevice.settings.ip,
+          id: roomNumber,
+        },
+        icon: '/room.svg',
+      };
+      session.emit('list_devices', dev);
+      roomDevices.push(dev);
+    }));
+    
     try {
       // Ventilation Device
       const dev = {

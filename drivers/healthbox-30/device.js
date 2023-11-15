@@ -50,8 +50,7 @@ class MyDevice extends Device {
   
     this.log("Settings", this.getName(), this.homey.settings.get('ip'))
 
-    if (this.getClass() === 'fan' && this.hasCapability('measure_airqualityindex') === false) {
-      this.log('Adding new capability');
+    if (!this.hasCapability('measure_airqualityindex')) {
       await this.addCapability('measure_airqualityindex');
     }
 
@@ -60,6 +59,9 @@ class MyDevice extends Device {
     
     if (this.getClass() === 'other' && !this.hasCapability('measure_humidity'))
       await this.addCapability('measure_humidity');
+
+    if (this.getClass() === 'other' && !this.hasCapability('measure_co2'))
+      await this.addCapability('measure_co2');
 
     this.registerMultipleCapabilityListener(['boost', 'timepicker', 'level'], this.setOptions.bind(this));
     this.log('MyDevice has been initialized');

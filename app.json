@@ -468,6 +468,21 @@
       "insights": true,
       "icon": "/assets/rpm.svg"
     },
+    "measure_voc": {
+      "type": "number",
+      "title": {
+        "en": "Volatile organic compounds",
+        "nl": "Vluchtige organische stoffen"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": ""
+      },
+      "insights": true,
+      "icon": "/assets/airquality.svg"
+    },
     "timeleft": {
       "type": "string",
       "title": {
