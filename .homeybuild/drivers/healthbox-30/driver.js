@@ -102,7 +102,6 @@ class MyDriver extends Driver {
                     sensor.type === "indoor temperature" &&
                     sensor.parameter.temperature.value
                   ) {
-                    this.log("Found Temperature for", matchedRoom["name"]);
                     if (!element.hasCapability("measure_temperature")) {
                       this.log("Adding capability Measure Temperature");
                       await element.addCapability("measure_temperature");

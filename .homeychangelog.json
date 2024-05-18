@@ -52,5 +52,8 @@
   },
   "1.4.0": {
     "en": "Added VOC capability to rooms that support it"
+  },
+  "1.4.1": {
+    "en": "Bugfix"
   }
 }
