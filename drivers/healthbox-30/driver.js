@@ -110,7 +110,6 @@ class MyDriver extends Driver {
                       "measure_temperature",
                       parseFloat(sensor.parameter.temperature.value.toFixed(1))
                     );
-                    break;
                   }
 
                   if (
@@ -125,7 +124,6 @@ class MyDriver extends Driver {
                       "measure_humidity",
                       Math.round(sensor.parameter.humidity.value)
                     );
-                    break;
                   }
 
                   if (
@@ -140,7 +138,6 @@ class MyDriver extends Driver {
                       "measure_co2",
                       Math.round(sensor.parameter.concentration.value)
                     );
-                    break;
                   }
 
                   if (
@@ -155,7 +152,6 @@ class MyDriver extends Driver {
                       "measure_airqualityindex",
                       Math.round(sensor.parameter.index.value)
                     );
-                    break;
                   }
 
                   if (
@@ -172,7 +168,6 @@ class MyDriver extends Driver {
                         sensor.parameter.concentration.value.toFixed(1)
                       )
                     );
-                    break;
                   }
                 }
               }

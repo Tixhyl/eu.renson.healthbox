@@ -102,6 +102,7 @@ class MyDriver extends Driver {
                     sensor.type === "indoor temperature" &&
                     sensor.parameter.temperature.value
                   ) {
+                    this.log("Found Temperature for", matchedRoom["name"]);
                     if (!element.hasCapability("measure_temperature")) {
                       this.log("Adding capability Measure Temperature");
                       await element.addCapability("measure_temperature");
@@ -110,7 +111,6 @@ class MyDriver extends Driver {
                       "measure_temperature",
                       parseFloat(sensor.parameter.temperature.value.toFixed(1))
                     );
-                    break;
                   }
 
                   if (
@@ -125,7 +125,6 @@ class MyDriver extends Driver {
                       "measure_humidity",
                       Math.round(sensor.parameter.humidity.value)
                     );
-                    break;
                   }
 
                   if (
@@ -140,7 +139,6 @@ class MyDriver extends Driver {
                       "measure_co2",
                       Math.round(sensor.parameter.concentration.value)
                     );
-                    break;
                   }
 
                   if (
@@ -155,7 +153,6 @@ class MyDriver extends Driver {
                       "measure_airqualityindex",
                       Math.round(sensor.parameter.index.value)
                     );
-                    break;
                   }
 
                   if (
@@ -172,7 +169,6 @@ class MyDriver extends Driver {
                         sensor.parameter.concentration.value.toFixed(1)
                       )
                     );
-                    break;
                   }
                 }
               }
