@@ -82,18 +82,28 @@ class MyDriver extends Driver {
             );
             if (!roomInfo) throw new Error("No roominfo found");
             const matchedRoom = rooms[element.getStoreValue("id")];
-            element.setCapabilityValue(
-              "measure_flowrate",
-              Math.round(
-                matchedRoom.actuator[0].parameter.flow_rate.value * 1e1
-              ) / 1e1
-            );
-            element.setCapabilityValue("boost", roomInfo.enable);
-            element.setCapabilityValue("level", roomInfo.level);
-            element.setCapabilityValue(
-              "timeleft",
-              new Date(roomInfo.remaining * 1000).toISOString().substr(11, 8)
-            );
+            if (
+              matchedRoom.actuator[0].parameter.flow_rate.value !== undefined
+            ) {
+              element.setCapabilityValue(
+                "measure_flowrate",
+                Math.round(
+                  matchedRoom.actuator[0].parameter.flow_rate.value * 1e1
+                ) / 1e1
+              );
+            }
+            if (roomInfo.enable !== undefined) {
+              element.setCapabilityValue("boost", roomInfo.enable);
+            }
+            if (roomInfo.level !== undefined) {
+              element.setCapabilityValue("level", roomInfo.level);
+            }
+            if (roomInfo.remaining !== undefined) {
+              element.setCapabilityValue(
+                "timeleft",
+                new Date(roomInfo.remaining * 1000).toISOString().substr(11, 8)
+              );
+            }
 
             try {
               if (this.sensors_enabled) {
