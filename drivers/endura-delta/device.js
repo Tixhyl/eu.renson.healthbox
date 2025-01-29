@@ -11,11 +11,11 @@ class MyDevice extends Device {
     async onInit() {
         this.log('MyDevice has been initialized');
 
-
         await this.setSettings({
             name: this.homey.settings.get('name'),
             endura_ip: this.homey.settings.get('endura_ip'),
         });
+        
         if (this.hasCapability('measure_co2.airquality') === false) {
             await this.addCapability('measure_co2.airquality');
         }
@@ -40,6 +40,9 @@ class MyDevice extends Device {
         if (this.hasCapability('measure_wind_strength.eta_airflow') === false) {
             await this.addCapability('measure_wind_strength.eta_airflow');
         }
+        if (this.hasCapability('filter_days') === false) {
+            await this.addCapability('filter_days');
+        }
 
         this.getProductionData();
 
@@ -47,21 +50,124 @@ class MyDevice extends Device {
             await this.getProductionData();
         }, 1000 * 60 * 1);
 
+        // Register Trigger Card
+        this._filterDaysTrigger = this.homey.flow.getDeviceTriggerCard('filter_days_remaining');
+        this._lastFilterDays = null;
+
+        // Register Flow Card Actions
+        this.setVentilationTimerAction = this.homey.flow.getActionCard('set_ventilation_timer');
+        this.setVentilationTimerAction.registerRunListener(async (args, state) => {
+            try {
+                const enduraApi = new EnduraApi(this.homey.settings.get('endura_ip'));
+                await enduraApi.setVentilationTimer(
+                    Number(args.duration),
+                    parseInt(args.level)
+                );
+                return true;
+            } catch (error) {
+                this.error('Failed to set ventilation timer:', error);
+                throw error;
+            }
+        });
+
+        this.stopVentilationTimerAction = this.homey.flow.getActionCard('stop_ventilation_timer');
+        this.stopVentilationTimerAction.registerRunListener(async (args, state) => {
+            try {
+                const enduraApi = new EnduraApi(this.homey.settings.get('endura_ip'));
+                await enduraApi.stopVentilationTimer();
+                return true;
+            } catch (error) {
+                this.error('Failed to stop ventilation timer:', error);
+                throw error;
+            }
+        });
+
+        this.startBreezeModeAction = this.homey.flow.getActionCard('start_breeze_mode');
+        this.startBreezeModeAction.registerRunListener(async (args, state) => {
+            try {
+                const enduraApi = new EnduraApi(this.homey.settings.get('endura_ip'));
+                await enduraApi.startBreezeMode(args.duration);
+                return true;
+            } catch (error) {
+                this.error('Failed to start breeze mode:', error);
+                throw error;
+            }
+        });
+
+        this.setHolidayModeAction = this.homey.flow.getActionCard('set_holiday_mode');
+        this.setHolidayModeAction.registerRunListener(async (args, state) => {
+            try {
+                const enduraApi = new EnduraApi(this.homey.settings.get('endura_ip'));
+                const [day, month, year] = args.until_date.split('-');
+                const formattedDate = `${year}-${month}-${day}`;
+                await enduraApi.setHolidayMode(formattedDate);
+                return true;
+            } catch (error) {
+                this.error('Failed to set holiday mode:', error);
+                throw error;
+            }
+        });
+
+        this.setAutomaticBreezeAction = this.homey.flow.getActionCard('set_automatic_breeze');
+        this.setAutomaticBreezeAction.registerRunListener(async (args, state) => {
+            try {
+                const enduraApi = new EnduraApi(this.homey.settings.get('endura_ip'));
+                await enduraApi.setAutomaticBreeze(
+                    args.enabled === 'true',
+                    parseFloat(args.temperature),
+                    parseInt(args.level)
+                );
+                return true;
+            } catch (error) {
+                this.error('Failed to set automatic breeze:', error);
+                throw error;
+            }
+        });
+
     }
 
     async getProductionData() {
         try {
-            console.log(this.homey.settings.get("name"));
-            // const settings = this.getSettings();
+            // Log device name from settings
+            console.log('Device name:', this.homey.settings.get("name"));
+            
+            // Get IP from settings
             let ip = this.homey.settings.get('endura_ip');
-
-            console.log(ip);
-
+            console.log('Device IP:', ip);
+    
+            // Initialize API and get data
             let enduraApi = new EnduraApi(ip);
             let baseSession = await enduraApi.getData();
             const deviceData = await enduraApi.processData(baseSession);
-            const [deviceName, deviceCO2, deviceIndoorAirQuality, deviceCurrentVentilationLevel, deviceExternalTemperature, deviceInternalTemperature, deviceHumidity, deviceMeasuredSupAirflow, deviceMeasuredEtaAirflow, deviceMac] = await Promise.all([deviceData.deviceName, deviceData.CO2, deviceData.indoorAirQuality, deviceData.currentVentilationLevel, deviceData.externalTemperature, deviceData.internalTemperature, deviceData.humidity, deviceData.measuredSupAirflow, deviceData.measuredEtaAirflow, deviceData.deviceMAC]);
-
+            
+            // Destructure all needed values from device data
+            const [
+                deviceName, 
+                deviceCO2, 
+                deviceIndoorAirQuality, 
+                deviceCurrentVentilationLevel, 
+                deviceExternalTemperature, 
+                deviceInternalTemperature, 
+                deviceHumidity, 
+                deviceMeasuredSupAirflow, 
+                deviceMeasuredEtaAirflow, 
+                deviceMac, 
+                deviceFilterRemainingDays
+            ] = await Promise.all([
+                deviceData.deviceName, 
+                deviceData.CO2, 
+                deviceData.indoorAirQuality, 
+                deviceData.currentVentilationLevel, 
+                deviceData.externalTemperature, 
+                deviceData.internalTemperature, 
+                deviceData.humidity, 
+                deviceData.measuredSupAirflow, 
+                deviceData.measuredEtaAirflow, 
+                deviceData.deviceMAC, 
+                deviceData.filterRemainingDays
+            ]);
+    
+            // Update all capability values
             await this.setCapabilityValue('measure_co2.airquality', deviceIndoorAirQuality);
             await this.setCapabilityValue('measure_co2.co2', deviceCO2);
             await this.setCapabilityValue('measure_humidity', deviceHumidity);
@@ -70,8 +176,25 @@ class MyDevice extends Device {
             await this.setCapabilityValue('measure_power.current_level', parseInt(deviceCurrentVentilationLevel.split("Level")[1]));
             await this.setCapabilityValue('measure_wind_strength.pulse_airflow', parseInt(deviceMeasuredSupAirflow));
             await this.setCapabilityValue('measure_wind_strength.eta_airflow', parseInt(deviceMeasuredEtaAirflow));
-
-
+            await this.setCapabilityValue('filter_days', deviceFilterRemainingDays);
+    
+            // Check and trigger filter days alert if needed
+            try {
+                const triggerCard = this.homey.flow.getDeviceTriggerCard('filter_days_remaining');
+                const args = await triggerCard.getArgumentValues(this);
+                
+                // Check each trigger argument
+                for (const arg of args) {
+                    if (deviceFilterRemainingDays <= arg.days) {
+                        console.log('Triggering filter alert for', arg.days, 'days');
+                        await triggerCard.trigger(this, {}, { days: arg.days });
+                    }
+                }
+            } catch (triggerError) {
+                console.error('Failed to process filter trigger:', triggerError);
+            }
+    
+            // Set device as available if it wasn't
             if (!this.getAvailable()) {
                 await this.setAvailable();
             }
