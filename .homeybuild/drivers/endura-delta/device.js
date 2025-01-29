@@ -16,32 +16,30 @@ class MyDevice extends Device {
             endura_ip: this.homey.settings.get('endura_ip'),
         });
         
-        if (this.hasCapability('measure_co2.airquality') === false) {
-            await this.addCapability('measure_co2.airquality');
-        }
-        if (this.hasCapability('measure_co2.co2') === false) {
-            await this.addCapability('measure_co2.co2');
-        }
-        if (this.hasCapability('measure_humidity') === false) {
-            await this.addCapability('measure_humidity');
-        }
-        if (this.hasCapability('measure_temperature.indoor') === false) {
-            await this.addCapability('measure_temperature.indoor');
-        }
-        if (this.hasCapability('measure_temperature.outdoor') === false) {
-            await this.addCapability('measure_temperature.outdoor');
-        }
-        if (this.hasCapability('measure_power.current_level') === false) {
-            await this.addCapability('measure_power.current_level');
-        }
-        if (this.hasCapability('measure_wind_strength.pulse_airflow') === false) {
-            await this.addCapability('measure_wind_strength.pulse_airflow');
-        }
-        if (this.hasCapability('measure_wind_strength.eta_airflow') === false) {
-            await this.addCapability('measure_wind_strength.eta_airflow');
-        }
-        if (this.hasCapability('filter_days') === false) {
-            await this.addCapability('filter_days');
+        // List of device capabilities
+        const requiredCapabilities = [
+            'measure_co2.airquality',
+            'measure_co2.co2',
+            'measure_co2.indoorairquality',
+            'measure_humidity',
+            'measure_temperature.indoor',
+            'measure_temperature.outdoor',
+            'measure_power.current_level',
+            'measure_wind_strength.pulse_airflow',
+            'measure_wind_strength.eta_airflow',
+            'measure_wind_strength.nominal_airflow',
+            'bypass_active',
+            'frost_protection_active',
+            'preheater_active',
+            'breeze_active',
+            'filter_days'
+        ];
+
+        // Adding missing capabilities
+        for (const capability of requiredCapabilities) {
+            if (!this.hasCapability(capability)) {
+                await this.addCapability(capability);
+            }
         }
 
         this.getProductionData();
@@ -50,6 +48,27 @@ class MyDevice extends Device {
             await this.getProductionData();
         }, 1000 * 60 * 1);
 
+        //Register listener for filter days
+        this.registerCapabilityListener('filter_days', async (value) => {
+            try {
+                const triggerCard = this.homey.flow.getDeviceTriggerCard('filter_days_remaining');
+                const args = await triggerCard.getArgumentValues(this);
+                
+                // Kontrola každého trigger argumentu
+                for (const arg of args) {
+                    if (value === arg.days) { // Změnili jsme podmínku na přesnou shodu
+                        this.log('Triggering filter alert for', arg.days, 'days');
+                        await triggerCard.trigger(this, {}, { days: arg.days });
+                    }
+                }
+            } catch (error) {
+                this.error('Failed to process filter trigger:', error);
+            }
+            
+            // Musíme vrátit Promise
+            return Promise.resolve();
+        });
+        
         // Register Trigger Card
         this._filterDaysTrigger = this.homey.flow.getDeviceTriggerCard('filter_days_remaining');
         this._lastFilterDays = null;
@@ -152,7 +171,12 @@ class MyDevice extends Device {
                 deviceMeasuredSupAirflow, 
                 deviceMeasuredEtaAirflow, 
                 deviceMac, 
-                deviceFilterRemainingDays
+                deviceFilterRemainingDays,
+                deviceTotalNominalAirflow,
+                deviceBypassLevel,
+                deviceFrostProtectionActive,
+                devicePreheaterEnabled,
+                deviceBreezeConditionsMet
             ] = await Promise.all([
                 deviceData.deviceName, 
                 deviceData.CO2, 
@@ -164,35 +188,32 @@ class MyDevice extends Device {
                 deviceData.measuredSupAirflow, 
                 deviceData.measuredEtaAirflow, 
                 deviceData.deviceMAC, 
-                deviceData.filterRemainingDays
+                deviceData.filterRemainingDays,
+                deviceData.totalNominalAirflow,
+                deviceData.bypassLevel,
+                deviceData.frostProtectionActive,
+                deviceData.preheaterEnabled,
+                deviceData.breezeConditionsMet
             ]);
     
             // Update all capability values
             await this.setCapabilityValue('measure_co2.airquality', deviceIndoorAirQuality);
             await this.setCapabilityValue('measure_co2.co2', deviceCO2);
+            await this.setCapabilityValue('measure_co2.indoorairquality', deviceIndoorAirQuality);
             await this.setCapabilityValue('measure_humidity', deviceHumidity);
             await this.setCapabilityValue('measure_temperature.indoor', deviceInternalTemperature);
             await this.setCapabilityValue('measure_temperature.outdoor', deviceExternalTemperature);
             await this.setCapabilityValue('measure_power.current_level', parseInt(deviceCurrentVentilationLevel.split("Level")[1]));
             await this.setCapabilityValue('measure_wind_strength.pulse_airflow', parseInt(deviceMeasuredSupAirflow));
             await this.setCapabilityValue('measure_wind_strength.eta_airflow', parseInt(deviceMeasuredEtaAirflow));
+            await this.setCapabilityValue('measure_wind_strength.nominal_airflow', parseInt(deviceTotalNominalAirflow));
             await this.setCapabilityValue('filter_days', deviceFilterRemainingDays);
     
-            // Check and trigger filter days alert if needed
-            try {
-                const triggerCard = this.homey.flow.getDeviceTriggerCard('filter_days_remaining');
-                const args = await triggerCard.getArgumentValues(this);
-                
-                // Check each trigger argument
-                for (const arg of args) {
-                    if (deviceFilterRemainingDays <= arg.days) {
-                        console.log('Triggering filter alert for', arg.days, 'days');
-                        await triggerCard.trigger(this, {}, { days: arg.days });
-                    }
-                }
-            } catch (triggerError) {
-                console.error('Failed to process filter trigger:', triggerError);
-            }
+            // Update boolean states
+            await this.setCapabilityValue('bypass_active', deviceBypassLevel === "1");
+            await this.setCapabilityValue('frost_protection_active', deviceFrostProtectionActive === "1");
+            await this.setCapabilityValue('preheater_active', devicePreheaterEnabled === "1");
+            await this.setCapabilityValue('breeze_active', deviceBreezeConditionsMet === "1");
     
             // Set device as available if it wasn't
             if (!this.getAvailable()) {

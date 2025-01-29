@@ -1,0 +1,27 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Frost protection",
+        "nl": "Vorstbescherming"
+    },
+    "titleTrue": {
+            "en": "Active",
+            "nl": "Actief"
+    },
+    "titleFalse": {
+            "en": "Off",
+            "nl": "Uit"
+    },
+    "insights": true,
+    "getable": true,
+    "setable": false,
+    "insightsTitleTrue": {
+        "en": "Frost protection activated",
+        "nl": "Vorstbescherming geactiveerd"
+    },
+    "insightsTitleFalse": {
+        "en": "Frost protection deactivated",
+        "nl": "Vorstbescherming gedeactiveerd"
+    },
+    "icon": "./assets/frost.svg"
+}

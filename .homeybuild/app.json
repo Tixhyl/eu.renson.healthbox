@@ -554,12 +554,19 @@
       "capabilities": [
         "measure_co2.airquality",
         "measure_co2.co2",
+        "measure_co2.indoorairquality",
         "measure_humidity",
         "measure_temperature.indoor",
         "measure_temperature.outdoor",
         "measure_power.current_level",
         "measure_wind_strength.pulse_airflow",
-        "measure_wind_strength.eta_airflow"
+        "measure_wind_strength.eta_airflow",
+        "measure_wind_strength.nominal_airflow",
+        "bypass_active",
+        "frost_protection_active",
+        "preheater_active",
+        "breeze_active",
+        "filter_days"
       ],
       "capabilitiesOptions": {
         "measure_co2.airquality": {
@@ -572,6 +579,16 @@
           "title": {
             "en": "CO2",
             "nl": "CO2"
+          }
+        },
+        "measure_co2.indoorairquality": {
+          "title": {
+            "en": "Indoor Airquality",
+            "nl": "Luchtkwaliteit binnenshuis"
+          },
+          "units": {
+            "en": "IAQ",
+            "nl": "IAQ"
           }
         },
         "measure_humidity": {
@@ -616,6 +633,16 @@
           "title": {
             "en": "Extraction airflow",
             "nl": "Extractie airflow"
+          },
+          "units": {
+            "en": "m3/h",
+            "nl": "m3/u"
+          }
+        },
+        "measure_wind_strength.nominal_airflow": {
+          "title": {
+            "en": "Nominal (set) airflow",
+            "nl": "Nominale luchtstroom"
           },
           "units": {
             "en": "m3/h",
@@ -738,6 +765,60 @@
       "insights": true,
       "icon": "/assets/boost.svg"
     },
+    "breeze_active": {
+      "type": "boolean",
+      "title": {
+        "en": "Breeze mode",
+        "nl": "Breeze-modus"
+      },
+      "titleTrue": {
+        "en": "Active",
+        "nl": "Actief"
+      },
+      "titleFalse": {
+        "en": "Off",
+        "nl": "Uit"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "insightsTitleTrue": {
+        "en": "Breeze mode activated",
+        "nl": "Breeze-modus geactiveerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Breeze mode deactivated",
+        "nl": "Breeze-modus gedeactiveerd"
+      },
+      "icon": "./assets/breeze.svg"
+    },
+    "bypass_active": {
+      "type": "boolean",
+      "title": {
+        "en": "Bypass active",
+        "nl": "Bypass actief"
+      },
+      "titleTrue": {
+        "en": "Active",
+        "nl": "Actief"
+      },
+      "titleFalse": {
+        "en": "Off",
+        "nl": "Uit"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "insightsTitleTrue": {
+        "en": "Bypass activated",
+        "nl": "Bypass geactiveerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Bypass deactivated",
+        "nl": "Bypass gedeactiveerd"
+      },
+      "icon": "./assets/bypass.svg"
+    },
     "filter_days": {
       "type": "number",
       "title": {
@@ -756,6 +837,33 @@
       "max": 365,
       "step": 1,
       "icon": "/assets/airquality.svg"
+    },
+    "frost_protection_active": {
+      "type": "boolean",
+      "title": {
+        "en": "Frost protection",
+        "nl": "Vorstbescherming"
+      },
+      "titleTrue": {
+        "en": "Active",
+        "nl": "Actief"
+      },
+      "titleFalse": {
+        "en": "Off",
+        "nl": "Uit"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "insightsTitleTrue": {
+        "en": "Frost protection activated",
+        "nl": "Vorstbescherming geactiveerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Frost protection deactivated",
+        "nl": "Vorstbescherming gedeactiveerd"
+      },
+      "icon": "./assets/frost.svg"
     },
     "level": {
       "type": "number",
@@ -831,6 +939,33 @@
       },
       "insights": true,
       "icon": "/assets/airquality.svg"
+    },
+    "preheater_active": {
+      "type": "boolean",
+      "title": {
+        "en": "Preheater",
+        "nl": "Voorverwarming"
+      },
+      "titleTrue": {
+        "en": "Active",
+        "nl": "Actief"
+      },
+      "titleFalse": {
+        "en": "Off",
+        "nl": "Uit"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "insightsTitleTrue": {
+        "en": "Preheater activated",
+        "nl": "Voorverwarming geactiveerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Preheater deactivated",
+        "nl": "Voorverwarming gedeactiveerd"
+      },
+      "icon": "./assets/preheater.svg"
     },
     "timeleft": {
       "type": "string",

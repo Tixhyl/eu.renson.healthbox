@@ -35,7 +35,11 @@ class EnduraApi {
     }
 
     async processData(data) {
+        // Initialize basic device info
         let deviceName;
+        let deviceMAC;
+    
+        // Initialize sensor measurements
         let CO2;
         let indoorAirQuality;
         let currentVentilationLevel;
@@ -44,46 +48,106 @@ class EnduraApi {
         let humidity;
         let measuredSupAirflow;
         let measuredEtaAirflow;
-        let deviceMAC;
+        let totalNominalAirflow;
+        
+        // Initialize maintenance info
         let filterRemainingDays;
+    
+        // Initialize system states
+        let bypassLevel;
+        let frostProtectionActive;
+        let preheaterEnabled;
+        let breezeConditionsMet;
+    
         try {
             for (let index = 0; index < data["ModifiedItems"].length; index++) {
-                if (data["ModifiedItems"][index]["Name"] == "Warranty number") {
-                    deviceName = data["ModifiedItems"][index]["Value"];
-                }
-                if (data["ModifiedItems"][index]["Name"] == "CO2") {
-                    CO2 = parseInt(data["ModifiedItems"][index]["Value"]);
-                }
-                if (data["ModifiedItems"][index]["Name"] == "IAQ") {
-                    indoorAirQuality = parseInt(data["ModifiedItems"][index]["Value"]);
-                }
-                if (data["ModifiedItems"][index]["Name"] == "Current ventilation level") {
-                    currentVentilationLevel = data["ModifiedItems"][index]["Value"];
-                    console.log(currentVentilationLevel);
-                }
-                if (data["ModifiedItems"][index]["Name"] == "T21") {
-                    externalTemperature = parseInt(data["ModifiedItems"][index]["Value"]);
-                }
-                if (data["ModifiedItems"][index]["Name"] == "T11") {
-                    internalTemperature = parseInt(data["ModifiedItems"][index]["Value"]);
-                }
-                if (data["ModifiedItems"][index]["Name"] == "RH11") {
-                    humidity = parseInt(data["ModifiedItems"][index]["Value"]);
-                }
-                if (data["ModifiedItems"][index]["Name"] == "Measured SUP airflow") {
-                    measuredSupAirflow = data["ModifiedItems"][index]["Value"];
-                }
-                if (data["ModifiedItems"][index]["Name"] == "Measured ETA airflow") {
-                    measuredEtaAirflow = data["ModifiedItems"][index]["Value"];
-                }
-                if (data["ModifiedItems"][index]["Name"] == "MAC") {
-                    deviceMAC = data["ModifiedItems"][index]["Value"];
-                }
-                if (data["ModifiedItems"][index]["Name"] == "Filter remaining time") {
-                    filterRemainingDays = parseInt(data["ModifiedItems"][index]["Value"]);
+                const item = data["ModifiedItems"][index];
+                
+                switch (item["Name"]) {
+                    // Basic device info
+                    case "Warranty number":
+                        deviceName = item["Value"];
+                        break;
+                    case "MAC":
+                        deviceMAC = item["Value"];
+                        break;
+    
+                    // Sensor measurements
+                    case "CO2":
+                        CO2 = parseInt(item["Value"]);
+                        break;
+                    case "IAQ":
+                        indoorAirQuality = parseInt(item["Value"]);
+                        break;
+                    case "Current ventilation level":
+                        currentVentilationLevel = item["Value"];
+                        console.log(currentVentilationLevel);
+                        break;
+                    case "T21":
+                        externalTemperature = parseInt(item["Value"]);
+                        break;
+                    case "T11":
+                        internalTemperature = parseInt(item["Value"]);
+                        break;
+                    case "RH11":
+                        humidity = parseInt(item["Value"]);
+                        break;
+                    case "Measured SUP airflow":
+                        measuredSupAirflow = item["Value"];
+                        break;
+                    case "Measured ETA airflow":
+                        measuredEtaAirflow = item["Value"];
+                        break;
+                    case "Total nominal airflow":
+                        totalNominalAirflow = item["Value"];
+                        break;
+    
+                    // Maintenance info
+                    case "Filter remaining time":
+                        filterRemainingDays = parseInt(item["Value"]);
+                        break;
+    
+                    // System states
+                    case "Bypass level":
+                        bypassLevel = item["Value"];
+                        break;
+                    case "Frost protection active":
+                        frostProtectionActive = item["Value"];
+                        break;
+                    case "Preheater enabled":
+                        preheaterEnabled = item["Value"];
+                        break;
+                    case "Breeze conditions met":
+                        breezeConditionsMet = item["Value"];
+                        break;
                 }
             }
-            return { deviceName, CO2, indoorAirQuality, currentVentilationLevel, externalTemperature, internalTemperature, humidity, measuredSupAirflow, measuredEtaAirflow, deviceMAC, filterRemainingDays };
+    
+            return {
+                // Basic device info
+                deviceName,
+                deviceMAC,
+                
+                // Sensor measurements
+                CO2,
+                indoorAirQuality,
+                currentVentilationLevel,
+                externalTemperature,
+                internalTemperature,
+                humidity,
+                measuredSupAirflow,
+                measuredEtaAirflow,
+                totalNominalAirflow,
+                
+                // Maintenance info
+                filterRemainingDays,
+                
+                // System states
+                bypassLevel,
+                frostProtectionActive,
+                preheaterEnabled,
+                breezeConditionsMet
+            };
         } catch (error) {
             throw error;
         }
