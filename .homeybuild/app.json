@@ -58,6 +58,493 @@
   "source": "https://github.com/Tixhyl/eu.renson.healthbox",
   "homepage": "https://renson.net/nl-be/producten/ventilatie/healthbox-3-0",
   "support": "mailto:info@tixhyl.be",
+  "flow": {
+    "triggers": [
+      {
+        "id": "filter_days_remaining",
+        "title": {
+          "en": "Filter lifetime remaining",
+          "nl": "Resterende filterduur"
+        },
+        "titleFormatted": {
+          "en": "Filter lifetime is !{{less|more}} than [[days]] days",
+          "nl": "Filterlevensduur is !{{minder|meer}} dan [[days]] dagen"
+        },
+        "hint": {
+          "en": "Triggers when filter lifetime reaches specified days",
+          "nl": "Triggert wanneer de filterlevensduur het opgegeven aantal dagen bereikt"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=endura-delta"
+          },
+          {
+            "name": "days",
+            "type": "number",
+            "title": {
+              "en": "Days",
+              "nl": "Dagen"
+            },
+            "titleFormatted": {
+              "en": "[[days]] days",
+              "nl": "[[days]] dagen"
+            },
+            "placeholder": {
+              "en": "Enter number of days",
+              "nl": "Voer aantal dagen in"
+            },
+            "min": 0,
+            "max": 360,
+            "step": 1
+          }
+        ]
+      },
+      {
+        "id": "measure_rpm_changed",
+        "title": {
+          "en": "RPM changed",
+          "nl": "RPM veranderd"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "measure_rpm",
+            "title": {
+              "en": "RPM",
+              "nl": "RPM"
+            },
+            "example": 420
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30&class=fan"
+          }
+        ]
+      },
+      {
+        "id": "measure_flowrate_changed",
+        "title": {
+          "en": "Flowrate changed",
+          "nl": "Debiet veranderd"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "measure_flowrate",
+            "title": {
+              "en": "Flowrate",
+              "nl": "Debiet"
+            },
+            "example": 5
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30"
+          }
+        ]
+      },
+      {
+        "id": "measure_airqualityindex_changed",
+        "title": {
+          "en": "Global Air Quality changed",
+          "nl": "Algemene Luchtkwaliteit veranderd"
+        },
+        "tokens": [
+          {
+            "type": "number",
+            "name": "measure_airqualityindex",
+            "title": {
+              "en": "Global Air Quality Index ",
+              "nl": "Algemene Luchtkwaliteitsindex"
+            },
+            "example": 72
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30&class=fan"
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "set_ventilation_timer",
+        "title": {
+          "en": "Set ventilation timer",
+          "nl": "Stel ventilatietimer in"
+        },
+        "titleFormatted": {
+          "en": "Set ventilation timer to level [[level]] for [[duration]] minutes",
+          "nl": "Stel ventilatietimer in op niveau [[level]] voor [[duration]] minuten"
+        },
+        "description": {
+          "en": "Sets the ventilation timer for specified duration and level",
+          "nl": "Stelt de ventilatietimer in voor opgegeven duur en niveau"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=endura-delta"
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "title": {
+              "en": "Duration (minutes)",
+              "nl": "Duur (minuten)"
+            },
+            "titleFormatted": {
+              "en": "[[duration]] minutes",
+              "nl": "[[duration]] minuten"
+            },
+            "placeholder": {
+              "en": "Enter duration in minutes",
+              "nl": "Voer duur in minuten in"
+            },
+            "min": 0,
+            "max": 180
+          },
+          {
+            "name": "level",
+            "type": "dropdown",
+            "title": {
+              "en": "Ventilation Level",
+              "nl": "Ventilatieniveau"
+            },
+            "titleFormatted": {
+              "en": "Level [[level]]",
+              "nl": "Niveau [[level]]"
+            },
+            "values": [
+              {
+                "id": "1",
+                "title": {
+                  "en": "Level 1",
+                  "nl": "Niveau 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "Level 2",
+                  "nl": "Niveau 2"
+                }
+              },
+              {
+                "id": "3",
+                "title": {
+                  "en": "Level 3",
+                  "nl": "Niveau 3"
+                }
+              },
+              {
+                "id": "4",
+                "title": {
+                  "en": "Level 4",
+                  "nl": "Niveau 4"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stop_ventilation_timer",
+        "title": {
+          "en": "Stop ventilation timer/breeze/holiday mode",
+          "nl": "Stop ventilatietimer"
+        },
+        "titleFormatted": {
+          "en": "Stop ventilation timer/breeze/holiday mode",
+          "nl": "Stop ventilatietimer"
+        },
+        "description": {
+          "en": "Stops the currently running ventilation timer",
+          "nl": "Stopt de huidige ventilatietimer"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=endura-delta"
+          }
+        ]
+      },
+      {
+        "id": "start_breeze_mode",
+        "title": {
+          "en": "Start breeze mode",
+          "nl": "Start breeze-modus"
+        },
+        "titleFormatted": {
+          "en": "Start breeze mode for [[duration]] minutes",
+          "nl": "Start breeze-modus voor [[duration]] minuten"
+        },
+        "description": {
+          "en": "Starts breeze mode for specified duration",
+          "nl": "Start breeze-modus voor opgegeven duur"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=endura-delta"
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "title": {
+              "en": "Duration (minutes)",
+              "nl": "Duur (minuten)"
+            },
+            "titleFormatted": {
+              "en": "[[duration]] minutes",
+              "nl": "[[duration]] minuten"
+            },
+            "placeholder": {
+              "en": "Enter duration in minutes",
+              "nl": "Voer duur in minuten in"
+            },
+            "min": 0,
+            "max": 180
+          }
+        ]
+      },
+      {
+        "id": "set_holiday_mode",
+        "title": {
+          "en": "Set holiday mode until date",
+          "nl": "Stel vakantiemodus in tot datum"
+        },
+        "titleFormatted": {
+          "en": "Set holiday mode until [[until_date]]",
+          "nl": "Stel vakantiemodus in tot [[until_date]]"
+        },
+        "description": {
+          "en": "Sets holiday mode until specified date",
+          "nl": "Stelt vakantiemodus in tot opgegeven datum"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=endura-delta"
+          },
+          {
+            "name": "until_date",
+            "type": "date",
+            "title": {
+              "en": "Until Date",
+              "nl": "Tot Datum"
+            },
+            "titleFormatted": {
+              "en": "Until [[until_date]]",
+              "nl": "Tot [[until_date]]"
+            },
+            "placeholder": {
+              "en": "Select end date",
+              "nl": "Selecteer einddatum"
+            }
+          }
+        ]
+      },
+      {
+        "id": "set_automatic_breeze",
+        "title": {
+          "en": "Configure automatic breeze",
+          "nl": "Configureer automatische breeze"
+        },
+        "titleFormatted": {
+          "en": "Set automatic breeze to [[enabled]] at [[temperature]]°C with level [[level]]",
+          "nl": "Stel automatische breeze in op [[enabled]] bij [[temperature]]°C met niveau [[level]]"
+        },
+        "description": {
+          "en": "Set automatic breeze function with temperature and level",
+          "nl": "Stel automatische breeze-functie in met temperatuur en niveau"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=endura-delta"
+          },
+          {
+            "name": "enabled",
+            "type": "dropdown",
+            "title": {
+              "en": "Function state",
+              "nl": "Functie status"
+            },
+            "titleFormatted": {
+              "en": "[[enabled]]",
+              "nl": "[[enabled]]"
+            },
+            "values": [
+              {
+                "id": "true",
+                "title": {
+                  "en": "ON",
+                  "nl": "AAN"
+                }
+              },
+              {
+                "id": "false",
+                "title": {
+                  "en": "OFF",
+                  "nl": "UIT"
+                }
+              }
+            ]
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "title": {
+              "en": "Activation temperature (°C)",
+              "nl": "Activatie temperatuur (°C)"
+            },
+            "titleFormatted": {
+              "en": "[[temperature]]°C",
+              "nl": "[[temperature]]°C"
+            },
+            "min": 15,
+            "max": 35,
+            "step": 0.5
+          },
+          {
+            "name": "level",
+            "type": "dropdown",
+            "title": {
+              "en": "Ventilation Level",
+              "nl": "Ventilatieniveau"
+            },
+            "titleFormatted": {
+              "en": "Level [[level]]",
+              "nl": "Niveau [[level]]"
+            },
+            "values": [
+              {
+                "id": "1",
+                "title": {
+                  "en": "Level 1",
+                  "nl": "Niveau 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "Level 2",
+                  "nl": "Niveau 2"
+                }
+              },
+              {
+                "id": "3",
+                "title": {
+                  "en": "Level 3",
+                  "nl": "Niveau 3"
+                }
+              },
+              {
+                "id": "4",
+                "title": {
+                  "en": "Level 4",
+                  "nl": "Niveau 4"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "set-flowrate",
+        "title": {
+          "en": "Set flow rate of a room for a specific time",
+          "nl": "Zet het debiet van een kamer voor een bepaalde tijd"
+        },
+        "titleFormatted": {
+          "en": "Set flowrate of [[rooms]] to [[flowrate]] for [[activationtime]] seconds",
+          "nl": "Zet debiet van [[rooms]] op [[flowrate]] voor [[activationtime]] seconden"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30&class=fan"
+          },
+          {
+            "type": "autocomplete",
+            "name": "rooms",
+            "placeholder": {
+              "en": "Room",
+              "nl": "Kamer"
+            }
+          },
+          {
+            "type": "range",
+            "name": "flowrate",
+            "min": 0,
+            "max": 200,
+            "step": 1,
+            "label": "%",
+            "labelDecimals": 0,
+            "title": {
+              "en": "Flowrate",
+              "nl": "Debiet"
+            }
+          },
+          {
+            "type": "number",
+            "name": "activationtime",
+            "title": {
+              "en": "Time in seconds",
+              "nl": "Tijd in seconden"
+            },
+            "placeholder": {
+              "en": "900"
+            }
+          }
+        ]
+      },
+      {
+        "id": "stop-boost",
+        "title": {
+          "en": "Stop boost for a specific room",
+          "nl": "Stop boost van een specifieke kamer"
+        },
+        "titleFormatted": {
+          "en": "Stop boost of [[rooms]]",
+          "nl": "Stop boost van [[rooms]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=healthbox-30&class=fan"
+          },
+          {
+            "type": "autocomplete",
+            "name": "rooms",
+            "placeholder": {
+              "en": "Room",
+              "nl": "Kamer"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {
@@ -67,12 +554,19 @@
       "capabilities": [
         "measure_co2.airquality",
         "measure_co2.co2",
+        "measure_co2.indoorairquality",
         "measure_humidity",
         "measure_temperature.indoor",
         "measure_temperature.outdoor",
         "measure_power.current_level",
         "measure_wind_strength.pulse_airflow",
-        "measure_wind_strength.eta_airflow"
+        "measure_wind_strength.eta_airflow",
+        "measure_wind_strength.nominal_airflow",
+        "bypass_active",
+        "frost_protection_active",
+        "preheater_active",
+        "breeze_active",
+        "filter_days"
       ],
       "capabilitiesOptions": {
         "measure_co2.airquality": {
@@ -85,6 +579,16 @@
           "title": {
             "en": "CO2",
             "nl": "CO2"
+          }
+        },
+        "measure_co2.indoorairquality": {
+          "title": {
+            "en": "Indoor Airquality",
+            "nl": "Luchtkwaliteit binnenshuis"
+          },
+          "units": {
+            "en": "IAQ",
+            "nl": "IAQ"
           }
         },
         "measure_humidity": {
@@ -129,6 +633,16 @@
           "title": {
             "en": "Extraction airflow",
             "nl": "Extractie airflow"
+          },
+          "units": {
+            "en": "m3/h",
+            "nl": "m3/u"
+          }
+        },
+        "measure_wind_strength.nominal_airflow": {
+          "title": {
+            "en": "Nominal (set) airflow",
+            "nl": "Nominale luchtstroom"
           },
           "units": {
             "en": "m3/h",
@@ -238,163 +752,6 @@
       "id": "healthbox-30"
     }
   ],
-  "flow": {
-    "triggers": [
-      {
-        "id": "measure_rpm_changed",
-        "title": {
-          "en": "RPM changed",
-          "nl": "RPM veranderd"
-        },
-        "tokens": [
-          {
-            "type": "number",
-            "name": "measure_rpm",
-            "title": {
-              "en": "RPM",
-              "nl": "RPM"
-            },
-            "example": 420
-          }
-        ],
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=healthbox-30&class=fan"
-          }
-        ]
-      },
-      {
-        "id": "measure_flowrate_changed",
-        "title": {
-          "en": "Flowrate changed",
-          "nl": "Debiet veranderd"
-        },
-        "tokens": [
-          {
-            "type": "number",
-            "name": "measure_flowrate",
-            "title": {
-              "en": "Flowrate",
-              "nl": "Debiet"
-            },
-            "example": 5
-          }
-        ],
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=healthbox-30"
-          }
-        ]
-      },
-      {
-        "id": "measure_airqualityindex_changed",
-        "title": {
-          "en": "Global Air Quality changed",
-          "nl": "Algemene Luchtkwaliteit veranderd"
-        },
-        "tokens": [
-          {
-            "type": "number",
-            "name": "measure_airqualityindex",
-            "title": {
-              "en": "Global Air Quality Index ",
-              "nl": "Algemene Luchtkwaliteitsindex"
-            },
-            "example": 72
-          }
-        ],
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=healthbox-30&class=fan"
-          }
-        ]
-      }
-    ],
-    "actions": [
-      {
-        "id": "set-flowrate",
-        "title": {
-          "en": "Set flow rate of a room for a specific time",
-          "nl": "Zet het debiet van een kamer voor een bepaalde tijd"
-        },
-        "titleFormatted": {
-          "en": "Set flowrate of [[rooms]] to [[flowrate]] for [[activationtime]] seconds",
-          "nl": "Zet debiet van [[rooms]] op [[flowrate]] voor [[activationtime]] seconden"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=healthbox-30&class=fan"
-          },
-          {
-            "type": "autocomplete",
-            "name": "rooms",
-            "placeholder": {
-              "en": "Room",
-              "nl": "Kamer"
-            }
-          },
-          {
-            "type": "range",
-            "name": "flowrate",
-            "min": 0,
-            "max": 200,
-            "step": 1,
-            "label": "%",
-            "labelDecimals": 0,
-            "title": {
-              "en": "Flowrate",
-              "nl": "Debiet"
-            }
-          },
-          {
-            "type": "number",
-            "name": "activationtime",
-            "title": {
-              "en": "Time in seconds",
-              "nl": "Tijd in seconden"
-            },
-            "placeholder": {
-              "en": "900"
-            }
-          }
-        ]
-      },
-      {
-        "id": "stop-boost",
-        "title": {
-          "en": "Stop boost for a specific room",
-          "nl": "Stop boost van een specifieke kamer"
-        },
-        "titleFormatted": {
-          "en": "Stop boost of [[rooms]]",
-          "nl": "Stop boost van [[rooms]]"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=healthbox-30&class=fan"
-          },
-          {
-            "type": "autocomplete",
-            "name": "rooms",
-            "placeholder": {
-              "en": "Room",
-              "nl": "Kamer"
-            }
-          }
-        ]
-      }
-    ]
-  },
   "capabilities": {
     "boost": {
       "type": "boolean",
@@ -407,6 +764,106 @@
       "setable": true,
       "insights": true,
       "icon": "/assets/boost.svg"
+    },
+    "breeze_active": {
+      "type": "boolean",
+      "title": {
+        "en": "Breeze mode",
+        "nl": "Breeze-modus"
+      },
+      "titleTrue": {
+        "en": "Active",
+        "nl": "Actief"
+      },
+      "titleFalse": {
+        "en": "Off",
+        "nl": "Uit"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "insightsTitleTrue": {
+        "en": "Breeze mode activated",
+        "nl": "Breeze-modus geactiveerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Breeze mode deactivated",
+        "nl": "Breeze-modus gedeactiveerd"
+      },
+      "icon": "./assets/breeze.svg"
+    },
+    "bypass_active": {
+      "type": "boolean",
+      "title": {
+        "en": "Bypass active",
+        "nl": "Bypass actief"
+      },
+      "titleTrue": {
+        "en": "Active",
+        "nl": "Actief"
+      },
+      "titleFalse": {
+        "en": "Off",
+        "nl": "Uit"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "insightsTitleTrue": {
+        "en": "Bypass activated",
+        "nl": "Bypass geactiveerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Bypass deactivated",
+        "nl": "Bypass gedeactiveerd"
+      },
+      "icon": "./assets/bypass.svg"
+    },
+    "filter_days": {
+      "type": "number",
+      "title": {
+        "en": "Filter remaining days",
+        "nl": "Resterend filterdagen"
+      },
+      "units": {
+        "en": "days",
+        "nl": "dagen"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "max": 365,
+      "step": 1,
+      "icon": "/assets/airquality.svg"
+    },
+    "frost_protection_active": {
+      "type": "boolean",
+      "title": {
+        "en": "Frost protection",
+        "nl": "Vorstbescherming"
+      },
+      "titleTrue": {
+        "en": "Active",
+        "nl": "Actief"
+      },
+      "titleFalse": {
+        "en": "Off",
+        "nl": "Uit"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "insightsTitleTrue": {
+        "en": "Frost protection activated",
+        "nl": "Vorstbescherming geactiveerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Frost protection deactivated",
+        "nl": "Vorstbescherming gedeactiveerd"
+      },
+      "icon": "./assets/frost.svg"
     },
     "level": {
       "type": "number",
@@ -482,6 +939,33 @@
       },
       "insights": true,
       "icon": "/assets/airquality.svg"
+    },
+    "preheater_active": {
+      "type": "boolean",
+      "title": {
+        "en": "Preheater",
+        "nl": "Voorverwarming"
+      },
+      "titleTrue": {
+        "en": "Active",
+        "nl": "Actief"
+      },
+      "titleFalse": {
+        "en": "Off",
+        "nl": "Uit"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "insightsTitleTrue": {
+        "en": "Preheater activated",
+        "nl": "Voorverwarming geactiveerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Preheater deactivated",
+        "nl": "Voorverwarming gedeactiveerd"
+      },
+      "icon": "./assets/preheater.svg"
     },
     "timeleft": {
       "type": "string",

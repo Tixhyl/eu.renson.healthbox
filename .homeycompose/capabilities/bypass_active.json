@@ -1,0 +1,27 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Bypass active",
+        "nl": "Bypass actief"
+    },
+    "titleTrue": {
+            "en": "Active",
+            "nl": "Actief"
+    },
+    "titleFalse": {
+            "en": "Off",
+            "nl": "Uit"
+    },
+    "insights": true,
+    "getable": true,
+    "setable": false,
+    "insightsTitleTrue": {
+        "en": "Bypass activated",
+        "nl": "Bypass geactiveerd"
+    },
+    "insightsTitleFalse": {
+        "en": "Bypass deactivated",
+        "nl": "Bypass gedeactiveerd"
+    },
+    "icon": "./assets/bypass.svg"
+}

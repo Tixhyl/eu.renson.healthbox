@@ -6,12 +6,19 @@
     "capabilities": [
         "measure_co2.airquality",
         "measure_co2.co2",
+        "measure_co2.indoorairquality",
         "measure_humidity",
         "measure_temperature.indoor",
         "measure_temperature.outdoor",
         "measure_power.current_level",
         "measure_wind_strength.pulse_airflow",
-        "measure_wind_strength.eta_airflow"
+        "measure_wind_strength.eta_airflow",
+        "measure_wind_strength.nominal_airflow",
+        "bypass_active",
+        "frost_protection_active",
+        "preheater_active",
+        "breeze_active",
+        "filter_days"
     ],
     "capabilitiesOptions": {
         "measure_co2.airquality": {
@@ -24,6 +31,16 @@
             "title": {
                 "en": "CO2",
                 "nl": "CO2"
+            }
+        },
+        "measure_co2.indoorairquality": {
+            "title": {
+                "en": "Indoor Airquality",
+                "nl": "Luchtkwaliteit binnenshuis"
+            },
+            "units": {
+                "en": "IAQ",
+                "nl": "IAQ"
             }
         },
         "measure_humidity": {
@@ -68,6 +85,16 @@
             "title": {
                 "en": "Extraction airflow",
                 "nl": "Extractie airflow"
+            },
+            "units": {
+                "en": "m3/h",
+                "nl": "m3/u"
+            }
+        },
+        "measure_wind_strength.nominal_airflow": {
+            "title": {
+                "en": "Nominal (set) airflow",
+                "nl": "Nominale luchtstroom"
             },
             "units": {
                 "en": "m3/h",

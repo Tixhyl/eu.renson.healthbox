@@ -1,0 +1,304 @@
+{
+    "triggers": [
+        {
+            "id": "filter_days_remaining",
+            "title": {
+                "en": "Filter lifetime remaining",
+                "nl": "Resterende filterduur"
+            },
+            "titleFormatted": {
+                "en": "Filter lifetime is !{{less|more}} than [[days]] days",
+                "nl": "Filterlevensduur is !{{minder|meer}} dan [[days]] dagen"
+            },
+            "hint": {
+                "en": "Triggers when filter lifetime reaches specified days",
+                "nl": "Triggert wanneer de filterlevensduur het opgegeven aantal dagen bereikt"
+            },
+            "args": [
+                {
+                    "name": "days",
+                    "type": "number",
+                    "title": {
+                        "en": "Days",
+                        "nl": "Dagen"
+                    },
+                    "titleFormatted": {
+                        "en": "[[days]] days",
+                        "nl": "[[days]] dagen"
+                    },
+                    "placeholder": {
+                        "en": "Enter number of days",
+                        "nl": "Voer aantal dagen in"
+                    },
+                    "min": 0,
+                    "max": 360,
+                    "step": 1
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "id": "set_ventilation_timer",
+            "title": {
+                "en": "Set ventilation timer",
+                "nl": "Stel ventilatietimer in"
+            },
+            "titleFormatted": {
+                "en": "Set ventilation timer to level [[level]] for [[duration]] minutes",
+                "nl": "Stel ventilatietimer in op niveau [[level]] voor [[duration]] minuten"
+            },
+            "description": {
+                "en": "Sets the ventilation timer for specified duration and level",
+                "nl": "Stelt de ventilatietimer in voor opgegeven duur en niveau"
+            },
+            "args": [
+                {
+                    "name": "duration",
+                    "type": "number",
+                    "title": {
+                        "en": "Duration (minutes)",
+                        "nl": "Duur (minuten)"
+                    },
+                    "titleFormatted": {
+                        "en": "[[duration]] minutes",
+                        "nl": "[[duration]] minuten"
+                    },
+                    "placeholder": {
+                        "en": "Enter duration in minutes",
+                        "nl": "Voer duur in minuten in"
+                    },
+                    "min": 0,
+                    "max": 180
+                },
+                {
+                    "name": "level",
+                    "type": "dropdown",
+                    "title": {
+                        "en": "Ventilation Level",
+                        "nl": "Ventilatieniveau"
+                    },
+                    "titleFormatted": {
+                        "en": "Level [[level]]",
+                        "nl": "Niveau [[level]]"
+                    },
+                    "values": [
+                        {
+                            "id": "1",
+                            "title": {
+                                "en": "Level 1",
+                                "nl": "Niveau 1"
+                            }
+                        },
+                        {
+                            "id": "2",
+                            "title": {
+                                "en": "Level 2",
+                                "nl": "Niveau 2"
+                            }
+                        },
+                        {
+                            "id": "3",
+                            "title": {
+                                "en": "Level 3",
+                                "nl": "Niveau 3"
+                            }
+                        },
+                        {
+                            "id": "4",
+                            "title": {
+                                "en": "Level 4",
+                                "nl": "Niveau 4"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "stop_ventilation_timer",
+            "title": {
+                "en": "Stop ventilation timer/breeze/holiday mode",
+                "nl": "Stop ventilatietimer"
+            },
+            "titleFormatted": {
+                "en": "Stop ventilation timer/breeze/holiday mode",
+                "nl": "Stop ventilatietimer"
+            },
+            "description": {
+                "en": "Stops the currently running ventilation timer",
+                "nl": "Stopt de huidige ventilatietimer"
+            }
+        },
+        {
+            "id": "start_breeze_mode",
+            "title": {
+                "en": "Start breeze mode",
+                "nl": "Start breeze-modus"
+            },
+            "titleFormatted": {
+                "en": "Start breeze mode for [[duration]] minutes",
+                "nl": "Start breeze-modus voor [[duration]] minuten"
+            },
+            "description": {
+                "en": "Starts breeze mode for specified duration",
+                "nl": "Start breeze-modus voor opgegeven duur"
+            },
+            "args": [
+                {
+                    "name": "duration",
+                    "type": "number",
+                    "title": {
+                        "en": "Duration (minutes)",
+                        "nl": "Duur (minuten)"
+                    },
+                    "titleFormatted": {
+                        "en": "[[duration]] minutes",
+                        "nl": "[[duration]] minuten"
+                    },
+                    "placeholder": {
+                        "en": "Enter duration in minutes",
+                        "nl": "Voer duur in minuten in"
+                    },
+                    "min": 0,
+                    "max": 180
+                }
+            ]
+        },
+        {
+            "id": "set_holiday_mode",
+            "title": {
+                "en": "Set holiday mode until date",
+                "nl": "Stel vakantiemodus in tot datum"
+            },
+            "titleFormatted": {
+                "en": "Set holiday mode until [[until_date]]",
+                "nl": "Stel vakantiemodus in tot [[until_date]]"
+            },
+            "description": {
+                "en": "Sets holiday mode until specified date",
+                "nl": "Stelt vakantiemodus in tot opgegeven datum"
+            },
+            "args": [
+                {
+                    "name": "until_date",
+                    "type": "date",
+                    "title": {
+                        "en": "Until Date",
+                        "nl": "Tot Datum"
+                    },
+                    "titleFormatted": {
+                        "en": "Until [[until_date]]",
+                        "nl": "Tot [[until_date]]"
+                    },
+                    "placeholder": {
+                        "en": "Select end date",
+                        "nl": "Selecteer einddatum"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "set_automatic_breeze",
+            "title": {
+                "en": "Configure automatic breeze",
+                "nl": "Configureer automatische breeze"
+            },
+            "titleFormatted": {
+                "en": "Set automatic breeze to [[enabled]] at [[temperature]]°C with level [[level]]",
+                "nl": "Stel automatische breeze in op [[enabled]] bij [[temperature]]°C met niveau [[level]]"
+            },
+            "description": {
+                "en": "Set automatic breeze function with temperature and level",
+                "nl": "Stel automatische breeze-functie in met temperatuur en niveau"
+            },
+            "args": [
+                {
+                    "name": "enabled",
+                    "type": "dropdown",
+                    "title": {
+                        "en": "Function state",
+                        "nl": "Functie status"
+                    },
+                    "titleFormatted": {
+                        "en": "[[enabled]]",
+                        "nl": "[[enabled]]"
+                    },
+                    "values": [
+                        {
+                            "id": "true",
+                            "title": {
+                                "en": "ON",
+                                "nl": "AAN"
+                            }
+                        },
+                        {
+                            "id": "false",
+                            "title": {
+                                "en": "OFF",
+                                "nl": "UIT"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "temperature",
+                    "type": "number",
+                    "title": {
+                        "en": "Activation temperature (°C)",
+                        "nl": "Activatie temperatuur (°C)"
+                    },
+                    "titleFormatted": {
+                        "en": "[[temperature]]°C",
+                        "nl": "[[temperature]]°C"
+                    },
+                    "min": 15,
+                    "max": 35,
+                    "step": 0.5
+                },
+                {
+                    "name": "level",
+                    "type": "dropdown",
+                    "title": {
+                        "en": "Ventilation Level",
+                        "nl": "Ventilatieniveau"
+                    },
+                    "titleFormatted": {
+                        "en": "Level [[level]]",
+                        "nl": "Niveau [[level]]"
+                    },
+                    "values": [
+                        {
+                            "id": "1",
+                            "title": {
+                                "en": "Level 1",
+                                "nl": "Niveau 1"
+                            }
+                        },
+                        {
+                            "id": "2",
+                            "title": {
+                                "en": "Level 2",
+                                "nl": "Niveau 2"
+                            }
+                        },
+                        {
+                            "id": "3",
+                            "title": {
+                                "en": "Level 3",
+                                "nl": "Niveau 3"
+                            }
+                        },
+                        {
+                            "id": "4",
+                            "title": {
+                                "en": "Level 4",
+                                "nl": "Niveau 4"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Breeze mode",
+        "nl": "Breeze-modus"
+    },
+    "titleTrue": {
+            "en": "Active",
+            "nl": "Actief"
+    },
+    "titleFalse": {
+            "en": "Off",
+            "nl": "Uit"
+    },
+    "insights": true,
+    "getable": true,
+    "setable": false,
+    "insightsTitleTrue": {
+        "en": "Breeze mode activated",
+        "nl": "Breeze-modus geactiveerd"
+    },
+    "insightsTitleFalse": {
+        "en": "Breeze mode deactivated",
+        "nl": "Breeze-modus gedeactiveerd"
+    },
+    "icon": "./assets/breeze.svg"
+}

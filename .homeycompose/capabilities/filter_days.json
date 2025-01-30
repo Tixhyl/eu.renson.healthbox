@@ -1,0 +1,19 @@
+{
+    "type": "number",
+    "title": {
+      "en": "Filter remaining days",
+      "nl": "Resterend filterdagen"
+    },
+    "units": {
+      "en": "days",
+      "nl": "dagen"
+    },
+    "insights": true,
+    "getable": true,
+    "setable": false,
+    "uiComponent": "sensor", 
+    "min": 0,
+    "max": 365,
+    "step": 1,
+    "icon": "/assets/airquality.svg"
+}
