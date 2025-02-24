@@ -24,7 +24,6 @@ class MyDriver extends Driver {
   async initHB() {
     this.log("Driver initialized, with ip", this.homey.settings.get("ip"));
     this.hb_api = new HealthboxApi(this.homey.settings.get("ip"));
-    this.sensors_enabled = keyset.valid;
   }
 
   async updateLoop() {
@@ -37,6 +36,7 @@ class MyDriver extends Driver {
       const keyset = await this.hb_api.verifyAccessKey(
         this.homey.settings.get("api_key")
       );
+      this.sensors_enabled = keyset.valid;
       this.log("api_key status", keyset);
 
       const req = await this.axiosFetch("/api/data/current");

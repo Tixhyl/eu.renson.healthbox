@@ -61,5 +61,8 @@
   },
   "1.5.1": {
     "en": "Bugfix when Endura device is removed"
+  },
+  "1.5.2": {
+    "en": "Bugfix api renewal"
   }
 }
