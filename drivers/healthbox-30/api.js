@@ -37,7 +37,6 @@ class HealthboxApi {
       if (!state) return { valid: false, msg: "Failed to get Access State" };
       if (state.state == "valid") {
         // all fine
-        console.log("Valid!");
         return { valid: true, msg: "Valid" };
       } else if (state.state == "validating") {
         // still busy, try again later
