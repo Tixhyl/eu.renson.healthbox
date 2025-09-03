@@ -147,3 +147,4 @@ dist
 /.homeybuild/
 drivers/healthbox-30/main.js
 test.js
+.DS_Store
