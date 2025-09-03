@@ -61,15 +61,21 @@ class MyDriver extends Driver {
             // Generic Box Ventilation statics
             const req = await this.axiosFetch("/device/fan");
             if (!req) throw new Error("Cannot get /device/fan");
-            element.setCapabilityValue("measure_rpm", req.rpm);
-            element.setCapabilityValue(
-              "measure_flowrate",
-              Math.round(req.flow * 1e1) / 1e1
-            );
-            element.setCapabilityValue(
-              "measure_power",
-              Math.round(req.power * 1e1) / 1e1
-            );
+            if (req.rpm !== undefined && typeof req.rpm === "number") {
+              element.setCapabilityValue("measure_rpm", req.rpm);
+            }
+            if (req.flow !== undefined && typeof req.flow === "number") {
+              element.setCapabilityValue(
+                "measure_flowrate",
+                Math.round(req.flow * 1e1) / 1e1
+              );
+            }
+            if (req.power !== undefined && typeof req.power === "number") {
+              element.setCapabilityValue(
+                "measure_power",
+                Math.round(req.power * 1e1) / 1e1
+              );
+            }
             if (element.hasCapability("measure_airqualityindex")) {
               element.setCapabilityValue(
                 "measure_airqualityindex",
@@ -84,7 +90,9 @@ class MyDriver extends Driver {
             if (!roomInfo) throw new Error("No roominfo found");
             const matchedRoom = rooms[element.getStoreValue("id")];
             if (
-              matchedRoom.actuator[0].parameter.flow_rate.value !== undefined
+              matchedRoom.actuator[0].parameter.flow_rate.value !== undefined &&
+              typeof matchedRoom.actuator[0].parameter.flow_rate.value ===
+                "number"
             ) {
               element.setCapabilityValue(
                 "measure_flowrate",
