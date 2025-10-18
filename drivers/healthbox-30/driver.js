@@ -105,7 +105,7 @@ class MyDriver extends Driver {
               element.setCapabilityValue("boost", roomInfo.enable);
             }
             if (roomInfo.level !== undefined) {
-              element.setCapabilityValue("level", roomInfo.level);
+              element.setCapabilityValue("level", roomInfo.level / 100.0);
             }
             if (roomInfo.remaining !== undefined) {
               element.setCapabilityValue(
@@ -354,7 +354,7 @@ class MyDriver extends Driver {
 
     const flowActionFlowrate = this.homey.flow.getActionCard("set-flowrate");
     flowActionFlowrate.registerRunListener(async (args, state) => {
-      const level = args.flowrate;
+      const level = args.flowrate / 100.0;
       const seconds = args.activationtime;
       if (args.rooms.allrooms) {
         await Promise.all(
