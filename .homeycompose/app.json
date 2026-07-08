@@ -1,21 +1,17 @@
 {
   "id": "eu.renson.healthbox",
-  "version": "1.5.1",
-  "compatibility": ">=5.0.0",
+  "version": "2.0.0",
+  "compatibility": ">=12.2.0",
   "sdk": 3,
   "brandColor": "#00275b",
-  "platforms": [
-    "local"
-  ],
+  "platforms": ["local"],
   "name": {
     "en": "Renson®"
   },
   "description": {
     "en": "Creating healthy spaces"
   },
-  "category": [
-    "climate"
-  ],
+  "category": ["climate"],
   "tags": {
     "en": [
       "renson",
